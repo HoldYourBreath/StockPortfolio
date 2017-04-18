@@ -489,7 +489,7 @@ total_change = 100 * allstocksdifference / total_stocks_paid_value
 ########################
 
 #Buy Algorithm
-def stock_buy(maxpersofinvestment, percentage, currprice, buyunder, cashfloat, minimumbuyfloat, stockspercentage, stocks_max_pers_of_investments_float):
+def stock_buy(maxpersofinvestment, percentage, currprice, buyunder, cashfloat, minimumbuyfloat): #stockspercentage, stocks_max_pers_of_investments_float):
     if  minimumbuyfloat > cashfloat:
         buy = False
     else:
@@ -511,7 +511,7 @@ buy_recommendation_list = []
 for x in range(0, number_of_stocks_int):
     buy_recommendation_list = buy_recommendation_list + [stock_buy(max_pers_of_investments[x], percentage_list[x],
                               stock_current_pricefloat_list[x], buy_price_recommendations[x], cashfloat,
-                              minimumbuyfloat, stockspercentage, stocks_max_pers_of_investments)]
+                              minimumbuyfloat)] #, stockspercentage, stocks_max_pers_of_investments)]
 
 
 ########################
@@ -828,7 +828,7 @@ class Stocktable(Frame):
         self.treeview.insert('', 'end', text='All available Cash', values=(
         '%.2f' % cashfloat + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Gold', values=(
-        '%.2f' % gold + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', ''))
+        '%.2f' % gold + ' ' + currency, '', '', '', '', '', '', '', '', '', '', 'Last Updated', ''))
         self.treeview.insert('', 'end', text='Other Investments', values=(
         '%.2f' % other_investmentsfloat + ' ' + currency, '', '', '', '', '', '', '', '', '', '', time.ctime(), ''))
         self.treeview.insert('', 'end', text='Sum of all investments', values=(

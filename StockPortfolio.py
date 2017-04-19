@@ -164,6 +164,7 @@ personal_data_file = pd.read_csv(target_file2)
 #stocks.csv
 stock_name = stocksfile.Stock
 buy_price_recommendations = stocksfile.BuyUnder
+low_price = stocksfile.LowPrice
 sales_target = stocksfile.SalesTarget
 max_pers_of_investments = stocksfile.MaxPersOfInvestments
 amount = stocksfile.Amount
@@ -200,10 +201,15 @@ name_list = []
 for x in range(0, number_of_stocks_int):
     name_list = name_list + [stock_name[x]]
 
-#Buy recommendations
+#Buy price recommendations
 buy_price_recommendations_list = []
 for x in range(0, number_of_stocks_int):
-    name_list = buy_price_recommendations_list + [buy_price_recommendations[x]]
+    buy_price_recommendations_list = buy_price_recommendations_list + [buy_price_recommendations[x]]
+
+low_price_list = []
+for x in range(0, number_of_stocks_int):
+    low_price_list = low_price_list + [low_price[x]]
+
 
 #Sales target
 sales_target_list = []
@@ -438,14 +444,11 @@ for x in range(0, number_of_stocks_int):
 def investmentpercentage(investment, sumofinvestments):
     return 100*investment/sumofinvestments
 
-
 #Sum of all stocks difference in price
 allstocksdifference = sum(stock_diff_list)
 
-
 #Total sum of all stocks paid value
 total_stocks_paid_value = sum(stock_paid_list)
-
 
 #Total sum of current value of all stocks
 sumofallstocks_list = []
@@ -453,7 +456,6 @@ for x in range(0, number_of_stocks_int):
     sumofallstocks_list = sumofallstocks_list + [stockvalue_list[x]]
 
 sumofallstocks = sum(sumofallstocks_list)
-
 
 #Total sum of all investments
 sumofinvestments = cashfloat + sumofallstocks + gold + other_investmentsfloat
@@ -463,19 +465,16 @@ stock_previous_close_value_list = []
 for x in range(0, number_of_stocks_int):
     stock_previous_close_value_list = stock_previous_close_value_list + [stockvalue(previous_stock_closefloat_list[x], amount_list[x], stock_exchangerate_list[x])]
 
-
 total_stocks_close_value = sum(stock_previous_close_value_list)
 
 #Stock development today
 daily_portfolio_development = 100 * (sumofallstocks - total_stocks_close_value) / total_stocks_close_value
-
 
 #Commodity's Percentage of investments
 cashpercentage = investmentpercentage(cashfloat, sumofinvestments)
 goldpercentage = investmentpercentage(gold, sumofinvestments)
 stockspercentage = investmentpercentage(sumofallstocks, sumofinvestments)
 otherinvestmentspercentage = investmentpercentage(other_investmentsfloat, sumofinvestments)
-
 
 percentage_list = []
 for x in range(0, number_of_stocks_int):
@@ -588,8 +587,6 @@ print('-------------------------------------------------------------------------
 #df.style.apply(highlight_max, color='darkorange', axis=None)
 #print(df)
 
-
-
 ########################
 #Spreadsheet GUI
 ########################
@@ -606,7 +603,6 @@ class Stocktable(Frame):
         self.CreateUIPersonalData()
         self.PersonalData()
 
-
         #Tkinter Grid Geometry Manager. Defines how to expand the widget if the resulting cell is larger than the widget itself.
         self.grid(sticky = (N,S,W,E))
         #self.returnexchangerate()
@@ -618,7 +614,6 @@ class Stocktable(Frame):
         self.parent.grid_rowconfigure(0,weight=1)
         self.parent.grid_columnconfigure(0,weight=1)
         self.parent.config(background="lavender")
-
 
         # Define the different GUI widgets
         self.dose_label = tkinter.Label(self.parent, text = "Dose:")
@@ -634,7 +629,7 @@ class Stocktable(Frame):
 
     def CreateUIStock(self):
         tv = Treeview(self)
-        tv['columns'] = ('currprice', 'prevclose', 'daychangepers', 'buyunder', 'recommendedbuy', 'amount', 'gav', 'persofinvestment',
+        tv['columns'] = ('currprice', 'prevclose', 'daychangepers', 'buyunder', 'lowprice', 'recommendedbuy', 'amount', 'gav', 'persofinvestment',
                          'maxpersofinvestment', 'paidvalue', 'totalvalue', 'difference', 'totalchange', 'selltarget')
         tv.heading("#0", text='Stock', anchor='w')
         tv.column("#0", anchor="w")
@@ -646,6 +641,8 @@ class Stocktable(Frame):
         tv.column('daychangepers', anchor='center', width=80)
         tv.heading('buyunder', text='Buy Under')
         tv.column('buyunder', anchor='center', width=50)
+        tv.heading('lowprice', text='Low Price')
+        tv.column('lowprice', anchor='center', width=50)
         tv.heading('recommendedbuy', text='Rec Buy')
         tv.column('recommendedbuy', anchor='center', width=50 ,)
         tv.heading('amount', text='Amount')
@@ -719,12 +716,13 @@ class Stocktable(Frame):
                                  '%.2f' % stock_current_pricefloat_list[x] + ' ' + stock_currency[x],
                                  '%.2f' % previous_stock_closefloat_list[x] + ' ' + stock_currency[x],
                                  '%.2f' % stock_daily_change_pers_list[x] +
-                                 ' %', '%.2f' % buy_price_recommendations[x] + ' ' + stock_currency[x],
+                                 ' %', '%.2f' % buy_price_recommendations_list[x] + ' ' + stock_currency[x],
+                                 '%.2f' % low_price_list[x] + ' ' + stock_currency[x],
                                  buy_recommendation_list[x],
                                  amount_list[x],
-                                 '%.2f' % gav_kurs[x] + ' ' + stock_currency[x],
+                                 '%.2f' % gav_kurs_list[x] + ' ' + stock_currency[x],
                                  '%.2f' % percentage_list[x] +
-                                 ' %', '%.2f' % max_pers_of_investments[x] + ' %',
+                                 ' %', '%.2f' % max_pers_of_investments_list[x] + ' %',
                                  '%.2f' % stock_paid_list[x] + ' ' + currency,
                                  '%.2f' % stockvalue_list[x] + ' ' + currency,
                                  '%.2f' % stock_diff_list[x] + ' ' + currency,
@@ -857,6 +855,77 @@ def piechart():
     #fig = pyplot.gcf()
     #fig.canvas.set_window_title('My title')
     plt.show()
+
+def my_stocks():
+    stocks_tk = Tk()
+    stocks_tk.title("My Stocks")
+    stocks_tk.grid_rowconfigure(0, weight=1)
+    stocks_tk.grid_columnconfigure(0, weight=1)
+    stocks_tk.config(background="lightblue")
+
+    stocks_tk.name_label = tkinter.Label(stocks_tk, text="Name:")
+    stocks_tk.buy_under_label = tkinter.Label(stocks_tk, text="Buy Under:")
+    stocks_tk.low_price_label = tkinter.Label(stocks_tk, text="Low Price:")
+    stocks_tk.amount_label = tkinter.Label(stocks_tk, text="Amount:")
+    stocks_tk.gav_label = tkinter.Label(stocks_tk, text="GAV:")
+    stocks_tk.currency_label = tkinter.Label(stocks_tk, text="Currency:")
+    stocks_tk.max_pers_of_investments_label = tkinter.Label(stocks_tk, text="Max % of Investments:")
+    stocks_tk.stock_web_page_label = tkinter.Label(stocks_tk, text="Stock Web Page:")
+    stocks_tk.sell_target_label = tkinter.Label(stocks_tk, text="Sell Target:")
+
+    stocks_tk.name_label.grid(row=0, column=0, sticky=tkinter.W)
+    stocks_tk.buy_under_label.grid(row=0, column=1, sticky=tkinter.W)
+    stocks_tk.low_price_label.grid(row=0, column=2, sticky=tkinter.W)
+    stocks_tk.amount_label.grid(row=0, column=3, sticky=tkinter.W)
+    stocks_tk.gav_label.grid(row=0, column=4, sticky=tkinter.W)
+    stocks_tk.currency_label.grid(row=0, column=5, sticky=tkinter.W)
+    stocks_tk.max_pers_of_investments_label.grid(row=0, column=6, sticky=tkinter.W)
+    stocks_tk.stock_web_page_label.grid(row=0, column=7, sticky=tkinter.W)
+    stocks_tk.sell_target_label.grid(row=0, column=8, sticky=tkinter.W)
+
+    stocks_tk.entry_list = []
+    for x in range(0, 8):
+        stocks_tk.entry_list = stocks_tk.entry_list + [stocks_tk.entry[x]]
+        stocks_tk.entry_list.insert(10, stock_name[x])
+        stocks_tk.entry_list.grid(row=1, column=x)
+        #stocks_tk.entry_list[x] = tkinter.Entry(stocks_tk)
+
+
+
+
+
+
+
+    '''
+    stocks_tk.buy_price_recommendations_entry = tkinter.Entry(stocks_tk)
+    stocks_tk.buy_price_recommendations_entry.insert(10, buy_price_recommendations)
+    stocks_tk.buy_price_recommendations_entry.grid(row=1, column=1)
+    stocks_tk.low_price_entry = tkinter.Entry(stocks_tk)
+    stocks_tk.low_price_entry.insert(10, low_price)
+    stocks_tk.low_price_entry.grid(row=1, column=2)
+    stocks_tk.sales_target_entry = tkinter.Entry(stocks_tk)
+    stocks_tk.sales_target_entry.insert(10, sales_target)
+    stocks_tk.sales_target_entry.grid(row=1, column=3)
+    '''
+
+'''
+    
+    
+    max_pers_of_investments
+    amount
+    gav_kurs
+    stock_currency
+    stock_web_page
+'''
+
+'''
+    stocks_tk.debt_label = tkinter.Label(stocks_tk, text="Debt:")
+    stocks_tk.debt_entry = tkinter.Entry(stocks_tk)
+    stocks_tk.debt_entry.insert(10, debtfloat)
+    stocks_tk.debt_label.grid(row=1, column=0, sticky=tkinter.W)
+    stocks_tk.debt_entry.grid(row=1, column=1)
+'''
+    #stocks_tk.grid()
 
 def personal_data():
     personal = Tk()
@@ -1065,7 +1134,7 @@ def main():
 
 
     filemenu.add_command(label="Personal Data", command=personal_data)
-    filemenu.add_command(label="My Stocks", command=donothing)
+    filemenu.add_command(label="My Stocks", command=my_stocks)
     '''
     filemenu.add_command(label="Save", command=donothing)
     filemenu.add_command(label="Save as...", command=donothing)

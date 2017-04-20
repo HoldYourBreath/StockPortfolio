@@ -883,30 +883,47 @@ def my_stocks():
     stocks_tk.stock_web_page_label.grid(row=0, column=7, sticky=tkinter.W)
     stocks_tk.sell_target_label.grid(row=0, column=8, sticky=tkinter.W)
 
+
     stocks_tk.entry_list = []
     for x in range(0, 8):
-        stocks_tk.entry_list = stocks_tk.entry_list + [stocks_tk.entry[x]]
-        stocks_tk.entry_list.insert(10, stock_name[x])
-        stocks_tk.entry_list.grid(row=1, column=x)
-        #stocks_tk.entry_list[x] = tkinter.Entry(stocks_tk)
+        stocks_tk.stock_name_entry = tkinter.Entry(stocks_tk)
+        stocks_tk.stock_name_entry.insert(x, stock_name[x])
+        stocks_tk.stock_name_entry.grid(row=x+1, column=0)
 
+        stocks_tk.buy_price_recommendations_entry = tkinter.Entry(stocks_tk)
+        stocks_tk.buy_price_recommendations_entry.insert(x, buy_price_recommendations_list[x])
+        stocks_tk.buy_price_recommendations_entry.grid(row=x+1, column=1)
 
+        stocks_tk.low_price_entry = tkinter.Entry(stocks_tk)
+        stocks_tk.low_price_entry.insert(x, low_price_list[x])
+        stocks_tk.low_price_entry.grid(row=x+1, column=2)
 
+        stocks_tk.amount_entry = tkinter.Entry(stocks_tk)
+        stocks_tk.amount_entry.insert(x, amount_list[x])
+        stocks_tk.amount_entry.grid(row=x+1, column=3)
 
+        stocks_tk.gav_kurs_entry = tkinter.Entry(stocks_tk)
+        stocks_tk.gav_kurs_entry.insert(x, gav_kurs_list[x])
+        stocks_tk.gav_kurs_entry.grid(row=x+1, column=4)
 
+        stocks_tk.currency_entry = tkinter.Entry(stocks_tk)
+        stocks_tk.currency_entry.insert(x, stock_currency[x])
+        stocks_tk.currency_entry.grid(row=x+1, column=5)
 
+        stocks_tk.max_pers_of_investments_entry = tkinter.Entry(stocks_tk)
+        stocks_tk.max_pers_of_investments_entry.insert(x, max_pers_of_investments_list[x])
+        stocks_tk.max_pers_of_investments_entry.grid(row=x+1, column=6)
 
-    '''
-    stocks_tk.buy_price_recommendations_entry = tkinter.Entry(stocks_tk)
-    stocks_tk.buy_price_recommendations_entry.insert(10, buy_price_recommendations)
-    stocks_tk.buy_price_recommendations_entry.grid(row=1, column=1)
-    stocks_tk.low_price_entry = tkinter.Entry(stocks_tk)
-    stocks_tk.low_price_entry.insert(10, low_price)
-    stocks_tk.low_price_entry.grid(row=1, column=2)
-    stocks_tk.sales_target_entry = tkinter.Entry(stocks_tk)
-    stocks_tk.sales_target_entry.insert(10, sales_target)
-    stocks_tk.sales_target_entry.grid(row=1, column=3)
-    '''
+        stocks_tk.stock_web_page_entry = tkinter.Entry(stocks_tk)
+        stocks_tk.stock_web_page_entry.insert(x, stock_web_page[x])
+        stocks_tk.stock_web_page_entry.grid(row=x+1, column=7)
+
+        stocks_tk.sales_target_entry = tkinter.Entry(stocks_tk)
+        stocks_tk.sales_target_entry.insert(x, sales_target_list[x])
+        stocks_tk.sales_target_entry.grid(row=x+1, column=8)
+
+        stocks_tk.save_button = tkinter.Button(stocks_tk, text="Save", command=donothing)
+        stocks_tk.save_button.grid(row=x+2, column=8, sticky=tkinter.W)
 
 '''
     

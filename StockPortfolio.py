@@ -31,6 +31,8 @@ import tkinter
 from tkinter import *
 from tkinter import ttk
 from tkinter.ttk import *
+import pandas as pd
+from random import randrange
 #root = Tk()
 #root.resizable(width=False, height=False)
 #menu = Menu(root)
@@ -165,6 +167,7 @@ personal_data_file = pd.read_csv(target_file2)
 stock_name = stocksfile.Stock
 buy_price_recommendations = stocksfile.BuyUnder
 low_price = stocksfile.LowPrice
+high_price = stocksfile.HighPrice
 sales_target = stocksfile.SalesTarget
 max_pers_of_investments = stocksfile.MaxPersOfInvestments
 amount = stocksfile.Amount
@@ -194,6 +197,9 @@ minimumbuyfloat = float(minimumbuy)
 other_investmentsfloat = float(other_investments)
 stocks_max_pers_of_investments_float = float(stocks_max_pers_of_investments)
 number_of_stocks_int = int(number_of_stocks)
+pers_bank_require_downpayment_for_loan = personal_data_file.AttributeValue[11]
+current_est_value_apartment = personal_data_file.AttributeValue[12]
+monthly_loan_payments = float(personal_data_file.AttributeValue[13])
 
 
 #Stock name
@@ -210,6 +216,9 @@ low_price_list = []
 for x in range(0, number_of_stocks_int):
     low_price_list = low_price_list + [low_price[x]]
 
+high_price_list = []
+for x in range(0, number_of_stocks_int):
+    high_price_list = high_price_list + [high_price[x]]
 
 #Sales target
 sales_target_list = []
@@ -352,7 +361,7 @@ for x in range(0, number_of_stocks_int):
 def previousstockclose(bloombergwebpage):
     page = requests.get(bloombergwebpage)
     tree = html.fromstring(page.content)
-    change = tree.xpath('//*[@id ="content"]/div/div/div[8]/div/div/div[4]/div[2]/text()')
+    change = tree.xpath('//*[@id="content"]/div/div/div[8]/div/div/div[4]/div[2]/text()')
     changestr = ''.join(change)
     previousstockclosefloat = float(changestr)
     return previousstockclosefloat
@@ -373,6 +382,12 @@ for x in range(0, number_of_stocks_int):
     previous_stock_closefloat_list = previous_stock_closefloat_list + [(previousstockclose(stock_web_page[x]))]
 
 #Calculations
+
+cash_in_apartment = float(current_est_value_apartment) - float(debt)
+
+max_loan_cash = int(current_est_value_apartment) - ((int(pers_bank_require_downpayment_for_loan) / 100) * int(current_est_value_apartment))
+
+how_much_more_loan_possible = max_loan_cash - float(debt)
 
 #Change % from previous stock close to current stock price
 def laststockpricechange(previousstockclose, currentstockprice):
@@ -459,6 +474,9 @@ sumofallstocks = sum(sumofallstocks_list)
 
 #Total sum of all investments
 sumofinvestments = cashfloat + sumofallstocks + gold + other_investmentsfloat
+
+
+net_worth = cash_in_apartment + sumofinvestments
 
 #Stock previous close value
 stock_previous_close_value_list = []
@@ -598,6 +616,7 @@ class Stocktable(Frame):
         #self.PersonalData1()
         self.CreateUIStock()
         self.LoadStockTable()
+        #self.LoadStockTableColor()
         self.CreateUISummary()
         self.LoadSummaryTable()
         self.CreateUIPersonalData()
@@ -629,7 +648,7 @@ class Stocktable(Frame):
 
     def CreateUIStock(self):
         tv = Treeview(self)
-        tv['columns'] = ('currprice', 'prevclose', 'daychangepers', 'buyunder', 'lowprice', 'recommendedbuy', 'amount', 'gav', 'persofinvestment',
+        tv['columns'] = ('currprice', 'prevclose', 'daychangepers', 'buyunder', 'lowprice', 'highprice', 'recommendedbuy', 'amount', 'gav', 'persofinvestment',
                          'maxpersofinvestment', 'paidvalue', 'totalvalue', 'difference', 'totalchange', 'selltarget')
         tv.heading("#0", text='Stock', anchor='w')
         tv.column("#0", anchor="w")
@@ -643,6 +662,8 @@ class Stocktable(Frame):
         tv.column('buyunder', anchor='center', width=50)
         tv.heading('lowprice', text='Low Price')
         tv.column('lowprice', anchor='center', width=50)
+        tv.heading('highprice', text='High Price')
+        tv.column('highprice', anchor='center', width=50)
         tv.heading('recommendedbuy', text='Rec Buy')
         tv.column('recommendedbuy', anchor='center', width=50 ,)
         tv.heading('amount', text='Amount')
@@ -709,9 +730,14 @@ class Stocktable(Frame):
 
 
     def LoadStockTable(self):
-
+        '''
+        self.labels = []
+        style = ttk.Style()
+        style.configure("red.TLabel", background='red')
+        style.configure("green.TLabel", background='green')
+        style.configure("header.TLabel", font = '-weight bold')
         for x in range(0, number_of_stocks_int):
-            self.treeview.insert('', 'end',
+           self.labels.append('', 'end',
                                  text=stock_name[x], values=(
                                  '%.2f' % stock_current_pricefloat_list[x] + ' ' + stock_currency[x],
                                  '%.2f' % previous_stock_closefloat_list[x] + ' ' + stock_currency[x],
@@ -728,6 +754,39 @@ class Stocktable(Frame):
                                  '%.2f' % stock_diff_list[x] + ' ' + currency,
                                  '%.2f' % total_change_list[x] + ' %',
                                  sales_target[x]))
+        '''
+
+
+
+        
+
+        for x in range(0, number_of_stocks_int):
+            self.treeview.insert('', 'end',
+                                 text=stock_name[x], values=(
+                                 '%.2f' % stock_current_pricefloat_list[x] + ' ' + stock_currency[x],
+                                 '%.2f' % previous_stock_closefloat_list[x] + ' ' + stock_currency[x],
+                                 '%.2f' % stock_daily_change_pers_list[x] +
+                                 ' %', '%.2f' % buy_price_recommendations_list[x] + ' ' + stock_currency[x],
+                                 '%.2f' % low_price_list[x] + ' ' + stock_currency[x],
+                                 '%.2f' % high_price_list[x] + ' ' + stock_currency[x],
+                                 buy_recommendation_list[x],
+                                 amount_list[x],
+                                 '%.2f' % gav_kurs_list[x] + ' ' + stock_currency[x],
+                                 '%.2f' % percentage_list[x] +
+                                 ' %', '%.2f' % max_pers_of_investments_list[x] + ' %',
+                                 '%.2f' % stock_paid_list[x] + ' ' + currency,
+                                 '%.2f' % stockvalue_list[x] + ' ' + currency,
+                                 '%.2f' % stock_diff_list[x] + ' ' + currency,
+                                 '%.2f' % total_change_list[x] + ' %',
+                                 sales_target[x]))
+        '''
+
+        '''    
+        ttk.Style().configure("Treeview", background="white",
+                              foreground="black", fieldbackground="white")
+        
+
+        #ttk.Style().configure("Treeview", background="firebrick1")
 
         '''
         print(ttk.Style().theme_names())
@@ -735,6 +794,13 @@ class Stocktable(Frame):
         ttk.Style().configure("Treeview", background="#383838", foreground="green")
         ttk.Style().configure("Treeview.Heading", background="green", foreground="blue")
         '''
+
+    '''
+    def LoadStockTableColor(self):
+        self.table = GridView(self)
+        self.table.pack()
+        self.table.set(new_rand_df())
+    '''
 
     def LoadSummaryTable(self):
 
@@ -782,7 +848,7 @@ class Stocktable(Frame):
         tv.heading('currprice', text='')
         tv.column('currprice', anchor='center', width=100)
         tv.heading('prevclose', text='')
-        tv.column('prevclose', anchor='center', width=100)
+        tv.column('prevclose', anchor='center', width=230)
         tv.heading('daychangepers', text='')
         tv.column('daychangepers', anchor='center', width=100)
         tv.heading('buyunder', text='')
@@ -813,24 +879,22 @@ class Stocktable(Frame):
         self.grid_columnconfigure(0, weight = 1)
 
     def PersonalData(self):
-        self.treeview.insert('', 'end', text='Debt', values=(
-        debt + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', ''))
-        self.treeview.insert('', 'end', text='Debt Interest rate', values=(
-        debt_interest_rate + ' %', '', '', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Minimum buy', values=(
-        '%.2f' % minimumbuyfloat + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', ''))
+        '%.f' % minimumbuyfloat + ' ' + currency, 'Loan', debt + ' ' + currency, '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Cash in Account 1', values=(
-        '%.2f' % cash_account1_float + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', ''))
+        '%.f' % cash_account1_float + ' ' + currency, 'Debt Interest rate', debt_interest_rate + ' %', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Cash in Account 2', values=(
-        '%.2f' % cash_account2_float + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', ''))
+        '%.f' % cash_account2_float + ' ' + currency, 'Required % banks require paid for apart', pers_bank_require_downpayment_for_loan + ' %', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='All available Cash', values=(
-        '%.2f' % cashfloat + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', ''))
+        '%.f' % cashfloat + ' ' + currency, 'Max amount of cash you can get, apartment', '%.f' % max_loan_cash + ' ' + currency, '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Gold', values=(
-        '%.2f' % gold + ' ' + currency, '', '', '', '', '', '', '', '', '', '', 'Last Updated', ''))
+        '%.f' % gold + ' ' + currency, 'How much more loan possible', '%.f' % how_much_more_loan_possible + ' ' + currency, '', '', '', '', '', '', '', '', 'Last Updated', ''))
         self.treeview.insert('', 'end', text='Other Investments', values=(
-        '%.2f' % other_investmentsfloat + ' ' + currency, '', '', '', '', '', '', '', '', '', '', time.ctime(), ''))
+        '%.f' % other_investmentsfloat + ' ' + currency, 'Estimated apartment value', current_est_value_apartment + ' ' + currency, '', '', '', '', '', '', '', '', time.ctime(), ''))
         self.treeview.insert('', 'end', text='Sum of all investments', values=(
-        '%.2f' % sumofinvestments + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', ''))
+        '%.f' % sumofinvestments + ' ' + currency, 'Cash in apartment', '%.f' % cash_in_apartment + ' ' + currency, '', '', '', '', '', '', '', '', '', ''))
+        self.treeview.insert('', 'end', text='Net worth', values=(
+        '%.f' % net_worth  + ' ' + currency, 'Monthly loan payment', '%.f' % monthly_loan_payments + ' ' + currency, '', '', '', '', '', '', '', '', '', ''))
 
 
 '''   class Piechart(Frame):
@@ -840,7 +904,38 @@ class Stocktable(Frame):
         def Pie(self):
 '''
 
+'''
+PADDING = dict(padx=3, pady=3)
+class GridView(Frame):
+    def __init__(self, master=None, **kwargs):
+        Frame.__init__(self, master, **kwargs)
+        self.labels = []
+        style = ttk.Style()
+        style.configure("red.TLabel", background='red')
+        style.configure("green.TLabel", background='green')
+        style.configure("header.TLabel", font = '-weight bold')
 
+    def set(self, df):
+        self.clear()
+        for col, name in enumerate(df.columns):
+            lbl = ttk.Label(self, text=name, style='header.TLabel')
+            lbl.grid(row=0, column=col, **PADDING)
+            self.labels.append(lbl)
+
+        for row, values in enumerate(df.itertuples(), 1):
+            for col, value in enumerate(values[1:]):
+                lbl = ttk.Label(self, text=value, style=self.get_style(value))
+                lbl.grid(row=row, column=col, **PADDING)
+                self.labels.append(lbl)
+
+
+def new_rand_df():
+    width = 10
+    height = 10
+    return pd.DataFrame([[randrange(100) for _ in range(width)] for _ in range(height)],
+                        columns=list('abcdefghijklmnopqrstuvwxyz'[:width]))
+
+'''
 def piechart():
     labels = 'Gold', 'Cash', 'Stocks', 'Other Investments'
     sizes = [gold, cashfloat, sumofallstocks, other_investmentsfloat]
@@ -856,6 +951,21 @@ def piechart():
     #fig.canvas.set_window_title('My title')
     plt.show()
 
+def piechart_inc_apartment():
+    labels = 'Gold', 'Cash', 'Stocks', 'Other Investments', 'Cash in Apartment'
+    sizes = [gold, cashfloat, sumofallstocks, other_investmentsfloat, cash_in_apartment]
+    colors = ['gold', 'yellowgreen', 'lightcoral', 'lightskyblue', 'brown']
+    explode = (0, 0, 0, 0, 0.1)  # explode Stocks
+
+    # Plot
+    plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+    autopct='%3.2f%%', shadow=True, startangle=90)
+    plt.title("Investments, including cash in apartment")
+    plt.axis('equal')
+    #fig = pyplot.gcf()
+    #fig.canvas.set_window_title('My title')
+    plt.show()
+
 def my_stocks():
     stocks_tk = Tk()
     stocks_tk.title("My Stocks")
@@ -866,6 +976,7 @@ def my_stocks():
     stocks_tk.name_label = tkinter.Label(stocks_tk, text="Name:")
     stocks_tk.buy_under_label = tkinter.Label(stocks_tk, text="Buy Under:")
     stocks_tk.low_price_label = tkinter.Label(stocks_tk, text="Low Price:")
+    stocks_tk.high_price_label = tkinter.Label(stocks_tk, text="High Price:")
     stocks_tk.amount_label = tkinter.Label(stocks_tk, text="Amount:")
     stocks_tk.gav_label = tkinter.Label(stocks_tk, text="GAV:")
     stocks_tk.currency_label = tkinter.Label(stocks_tk, text="Currency:")
@@ -876,6 +987,7 @@ def my_stocks():
     stocks_tk.name_label.grid(row=0, column=0, sticky=tkinter.W)
     stocks_tk.buy_under_label.grid(row=0, column=1, sticky=tkinter.W)
     stocks_tk.low_price_label.grid(row=0, column=2, sticky=tkinter.W)
+    stocks_tk.high_price_label.grid(row=0, column=2, sticky=tkinter.W)
     stocks_tk.amount_label.grid(row=0, column=3, sticky=tkinter.W)
     stocks_tk.gav_label.grid(row=0, column=4, sticky=tkinter.W)
     stocks_tk.currency_label.grid(row=0, column=5, sticky=tkinter.W)
@@ -897,6 +1009,10 @@ def my_stocks():
         stocks_tk.low_price_entry = tkinter.Entry(stocks_tk)
         stocks_tk.low_price_entry.insert(x, low_price_list[x])
         stocks_tk.low_price_entry.grid(row=x+1, column=2)
+
+        stocks_tk.high_price_entry = tkinter.Entry(stocks_tk)
+        stocks_tk.high_price_entry.insert(x, high_price_list[x])
+        stocks_tk.high_price_entry.grid(row=x+1, column=2)
 
         stocks_tk.amount_entry = tkinter.Entry(stocks_tk)
         stocks_tk.amount_entry.insert(x, amount_list[x])
@@ -1182,6 +1298,7 @@ def main():
 
     graphmenu = Menu(menubar, tearoff=0)
     graphmenu.add_command(label="Investments Chart - Pie Diagram", command=piechart)
+    graphmenu.add_command(label="Investments Chart + cash in apartment - Pie Diagram", command=piechart_inc_apartment)
     menubar.add_cascade(label="Graphs", menu=graphmenu)
 
     root.config(menu=menubar)

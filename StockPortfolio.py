@@ -1,4 +1,3 @@
-import random
 import csv
 import sys
 import os
@@ -6,126 +5,21 @@ import pip
 import time
 print(pip.pep425tags.get_supported())
 from lxml import html
-from lxml import etree
 import requests
 import pandas as pd
-import scipy
-import datetime
-#import pandas.io.data as web
 import matplotlib.pyplot as plt
-import seaborn as sns
-#from matplotlib import style
-
 from matplotlib.pyplot import *
-#from matplotlib import pyplot as plt
-from pathlib import Path
-#style.use('ggplot')
+
 import numpy as np
-#pd.set_option('display.height', 1000)
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1500)
-import operator
-
 import tkinter
 from tkinter import *
 from tkinter import ttk
 from tkinter.ttk import *
 import pandas as pd
 from random import randrange
-#root = Tk()
-#root.resizable(width=False, height=False)
-#menu = Menu(root)
-#root.config(menu=menu)
-
-'''
-menubar = Menu(root)
-root.config(menu=menubar)
-
-fileMenu = Menu(menubar, tearoff=False)
-#editMenu = Menu(menubar, tearoff=False)
-
-menubar.add_cascade(label="File",underline=0, menu=fileMenu)
-#menubar.add_cascade(label="Edit",underline=0, menu=editMenu)
-
-fileMenu.add_command(label="Open...", underline=0)
-fileMenu.add_command(label="Save", underline=0)
-fileMenu.add_separator()
-fileMenu.add_command(label="Exit", underline=1)
-
-'''
-
-#dates = pd.date_range('20160101', periods=6)
-#df = pd.DataFrame(np.random.randn(6,4),index=dates,columns=list('ABCD'))
-
-#root = Tk()
-
-'''
-t1 = Text(root)
-
-t1.grid()
-'''
-#from Tkinter import Tk
-
-
-def flush(self):
-    pass
-
-'''
-#If enabled prints Stockportfolio Data to another window
-class PrintToT1(object):
- def write(self, s):
-     t1.insert(END, s)
-     flush(self)
-
-#sys.stdout = PrintToT1()
-'''
-
-
-
-
-'''
-subMenu = Menu(menu)
-menu.add_cascade(label="File", menu=subMenu)
-label_1 = Label(root, text="Name")
-label_2 = Label(root, text="Password")
-entry_1 = Entry(root)
-entry_2 = Entry(root)
-
-label_1.grid(row=0, sticky=E)
-label_2.grid(row=1, sticky=E)
-
-entry_1.grid(row=0, column=1)
-entry_2.grid(row=1, column=1)
-#
-toolbar = Frame(root, bg="blue")
-
-#Status bar
-#status = Label(root, text="Preparing to do nothing...", bd=1, relief=SUNKEN, anchor=W)
-#status.pack(side=BOTTOM, fill=X)
-
-'''
-
-'''
-topFrame = Frame(root)
-topFrame.pack()
-bottomFrame = Frame(root)
-bottomFrame.pack(side=BOTTOM)
-
-button1 = Button(topFrame, text="Button 1", fg="red")
-button2 = Button(topFrame, text="Button 2", fg="blue")
-button3 = Button(topFrame, text="Button 3", fg="green")
-button4 = Button(bottomFrame, text="Button 4", fg="purple")
-
-button1.pack(side=LEFT)
-button2.pack(side=LEFT)
-button3.pack(side=LEFT)
-button4.pack(side=BOTTOM)
-'''
-
-#theLabel = Label(root, text="This is too easy")
-#theLabel.pack()
-
 
 ########################
 #Read data from stocks.csv and personal_data.csv
@@ -152,16 +46,6 @@ else:
     sys.exit()
 stocksfile = pd.read_csv(target_file)
 personal_data_file = pd.read_csv(target_file2)
-
-
-#row_count = sum(1 for line in personal_data_file)
-#print(row_count)
-
-#pd.read_csv(stocksfile)
-#df.Col2.str.get_dummies(sep="http").values.sum()
-
-
-#number_of_stocks = 6
 
 #stocks.csv
 stock_name = stocksfile.Stock
@@ -262,16 +146,6 @@ def returnexchangerate(xecurrencywebpage):
     exchangeratefloat = float(ratestr.replace(',', '.'))
     return exchangeratefloat
 
-'''
-def returnexchangerate(xecurrencywebpage, from_currency):
-    currency
-    page = requests.get(xecurrencywebpage)
-    tree = html.fromstring(page.content)
-    rate = tree.xpath('//*[@id="ucc-container"]/span[2]/span[2]/text()')
-    ratestr = ''.join(rate)
-    exchangeratefloat = float(ratestr.replace(',', '.'))
-    return exchangeratefloat
-'''
 cadsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=CAD&To=SEK')
 usdsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=USD&To=SEK')
 cadeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?From=EUR&To=CAD')
@@ -282,49 +156,9 @@ def returngoldusd():
     goldpage = requests.get('https://bors-nliv.svd.se/')
     goldtree = html.fromstring(goldpage.content)
     goldrate = goldtree.xpath('normalize-space(//*[@id="indicatorbox"]/ul/li[2]/ul/li[2]/span[1]/text())')
-    #goldchange = goldtree.xpath('// *[ @ id = "indicatorbox"] / ul / li[2] / ul / li[2] / span[2]/text()')
-    #goldchange = goldtree.xpath('//*[@id="indicatorbox"]/ul/li[2]/ul/li[2]/span[2]/text()')
-    goldchange = goldtree.xpath('normalize-space(//*[@id="indicatorbox"]/ul/li[2]/ul/li[2]/span[2]/text())')
-    #print(goldchange)
-    str1 = goldchange.find(' ')
-    #print(str1)
-
-    '''
-    if ' ' in goldchange:
-        goldchangeshort = goldchange[:goldchange.index(' ')+1]
-        print(goldchangeshort)
-    '''
-    #goldchangestr = ''.join(goldrate)
-    #print(goldchangestr)
-    #goldchangestr
-
     goldratestr = ''.join(goldrate)
     goldratefloat = float(goldratestr.replace(' ', ''))
     return goldratefloat
-
-
-'''
-no_exchange_rate = 1
-if stock_currency_list[x] == 'CAD':
-    exchange_rate_to_use = cadsekratefloat
-elif stock_currency_list[x] == 'USD':
-        exchange_rate_to_use = usdsekratefloat
-else stock_currency_list[x] == 'SEK':
-    exchange_rate_to_use = no_exchange_rate
-    
-    
-def choose_exchange_rate(stock_currency_list[x]):
-    if stock_currency_list[x] == 'CAD':
-        exchange_rate_to_use = cadsekratefloat
-        return exchange_rate_to_use
-    elif stock_currency_list[x] == 'USD':
-        exchange_rate_to_use = usdsekratefloat
-        return exchange_rate_to_use
-    else stock_currency_list[x] == 'SEK':
-        exchange_rate_to_use = no_exchange_rate
-        return exchange_rate_to_use
-'''
-
 
 ########################
 #Stock prices
@@ -339,19 +173,6 @@ def stockcurrentpricebloomberg(bloombergwebpage):
     stockcurrentpricebloombergfloat = float(pricestr)
     return stockcurrentpricebloombergfloat
 
-'''
-#Stock current price Nordnet
-def stockcurrentpricenordnet(nordnetwebpage):
-    page = requests.get(nordnetwebpage)
-    tree = html.fromstring(page.content)
-    change = tree.xpath('//*[@id="instrumentcontainer"]/div/table/tr/td[3]/text()')
-    print(change)
-    changestr = ''.join(change)
-    print(changestr)
-    stockcurrentpricenordnetfloat = float(changestr)
-    return stockcurrentpricenordnetfloat
-'''
-
 stock_current_pricefloat_list = []
 for x in range(0, number_of_stocks_int):
     stock_current_pricefloat_list = stock_current_pricefloat_list + [(stockcurrentpricebloomberg(stock_web_page[x]))]
@@ -365,17 +186,6 @@ def previousstockclose(bloombergwebpage):
     changestr = ''.join(change)
     previousstockclosefloat = float(changestr)
     return previousstockclosefloat
-
-'''
-#Stock previous close price Nordnet
-def previousstockclosenordnet(nordnetwebpage):
-    page = requests.get(nordnetwebpage)
-    tree = html.fromstring(page.content)
-    change = tree.xpath('//*[@id="instrumentcontainer"]/div/table/tr/td[3]')
-    changestr = ''.join(change)
-    previousstockclosenordnetfloat = float(changestr)
-    return previousstockclosenordnetfloat
-'''
 
 previous_stock_closefloat_list = []
 for x in range(0, number_of_stocks_int):
@@ -403,12 +213,6 @@ gold = goldsek * goldonzfloat
 def stockvalue(amount, pricefloat, ratefloat):
     return amount*pricefloat*ratefloat
 
-
-'''
-for x in range(0, number_of_stocks):
-    stockvalue_list = stockvalue_list + [stockvalue[x]]
-
-'''
 stock_currency_list = []
 for x in range(0, number_of_stocks_int):
     stock_currency_list = stock_currency_list + [stock_currency[x]]
@@ -569,9 +373,6 @@ def highlight_max(data, color='yellow'):
         return pd.DataFrame(np.where(is_max, attr, ''),
                             index=data.index, columns=data.columns)
 
-#s = df.style.applymap(color_negative_red)
-#print(s)
-#Printing
 print('--------------------------------------------------------------------------------')
 print('************ Welcome to Stock Portfolio,', name, '************')
 print('--------------------------------------------------------------------------------')
@@ -601,9 +402,27 @@ print("Other Investments percentage of investments", '%.2f' % otherinvestmentspe
 print('--------------------------------------------------------------------------------')
 print("Time updated: ", time.ctime())
 print('--------------------------------------------------------------------------------')
-#print(s)
-#df.style.apply(highlight_max, color='darkorange', axis=None)
-#print(df)
+
+def new_rand_df():
+    width = 10
+    height = 10
+    return pd.DataFrame([[randrange(100) for _ in range(width)] for _ in range(height)],
+                        columns=list('abcdefghijklmnopqrstuvwxyz'[:width]))
+
+class StatusBar(Frame):
+
+    def __init__(self, master):
+        Frame.__init__(self, master)
+        self.label = Label(self, bd=1, relief=SUNKEN, anchor=W)
+        self.label.pack(fill=X)
+
+    def set(self, format, *args):
+        self.label.config(text=format % args)
+        self.label.update_idletasks()
+
+    def clear(self):
+        self.label.config(text="")
+        self.label.update_idletasks()
 
 ########################
 #Spreadsheet GUI
@@ -613,7 +432,6 @@ class Stocktable(Frame):
 
     def __init__(self, parent):
         Frame.__init__(self, parent)
-        #self.PersonalData1()
         self.CreateUIStock()
         self.LoadStockTable()
         #self.LoadStockTableColor()
@@ -624,26 +442,8 @@ class Stocktable(Frame):
 
         #Tkinter Grid Geometry Manager. Defines how to expand the widget if the resulting cell is larger than the widget itself.
         self.grid(sticky = (N,S,W,E))
-        #self.returnexchangerate()
         parent.grid_rowconfigure(0, weight = 1)
         parent.grid_columnconfigure(0, weight = 1)
-        #parent.grid_rowconfigure(1, height=200)
-
-    def PersonalData1(self):
-        self.parent.grid_rowconfigure(0,weight=1)
-        self.parent.grid_columnconfigure(0,weight=1)
-        self.parent.config(background="lavender")
-
-        # Define the different GUI widgets
-        self.dose_label = tkinter.Label(self.parent, text = "Dose:")
-        self.dose_entry = tkinter.Entry(self.parent)
-        self.dose_label.grid(row = 0, column = 0, sticky = tkinter.W)
-        self.dose_entry.grid(row = 0, column = 1)
-
-        self.modified_label = tkinter.Label(self.parent, text = "Date Modified:")
-        self.modified_entry = tkinter.Entry(self.parent)
-        self.modified_label.grid(row = 1, column = 0, sticky = tkinter.W)
-        self.modified_entry.grid(row = 1, column = 1)
 
 
     def CreateUIStock(self):
@@ -686,8 +486,6 @@ class Stocktable(Frame):
         tv.column('selltarget', anchor='center', width=50)
         tv.grid(sticky = (N,S,W,E))
         self.treeview = tv
-        #self.grid_rowconfigure(10, weight = 10)
-        #self.grid_columnconfigure(0, weight = 1)
 
     def CreateUISummary(self):
         tv = Treeview(self)
@@ -730,35 +528,6 @@ class Stocktable(Frame):
 
 
     def LoadStockTable(self):
-        '''
-        self.labels = []
-        style = ttk.Style()
-        style.configure("red.TLabel", background='red')
-        style.configure("green.TLabel", background='green')
-        style.configure("header.TLabel", font = '-weight bold')
-        for x in range(0, number_of_stocks_int):
-           self.labels.append('', 'end',
-                                 text=stock_name[x], values=(
-                                 '%.2f' % stock_current_pricefloat_list[x] + ' ' + stock_currency[x],
-                                 '%.2f' % previous_stock_closefloat_list[x] + ' ' + stock_currency[x],
-                                 '%.2f' % stock_daily_change_pers_list[x] +
-                                 ' %', '%.2f' % buy_price_recommendations_list[x] + ' ' + stock_currency[x],
-                                 '%.2f' % low_price_list[x] + ' ' + stock_currency[x],
-                                 buy_recommendation_list[x],
-                                 amount_list[x],
-                                 '%.2f' % gav_kurs_list[x] + ' ' + stock_currency[x],
-                                 '%.2f' % percentage_list[x] +
-                                 ' %', '%.2f' % max_pers_of_investments_list[x] + ' %',
-                                 '%.2f' % stock_paid_list[x] + ' ' + currency,
-                                 '%.2f' % stockvalue_list[x] + ' ' + currency,
-                                 '%.2f' % stock_diff_list[x] + ' ' + currency,
-                                 '%.2f' % total_change_list[x] + ' %',
-                                 sales_target[x]))
-        '''
-
-
-
-        
 
         for x in range(0, number_of_stocks_int):
             self.treeview.insert('', 'end',
@@ -786,25 +555,53 @@ class Stocktable(Frame):
                               foreground="black", fieldbackground="white")
         
 
-        #ttk.Style().configure("Treeview", background="firebrick1")
-
-        '''
-        print(ttk.Style().theme_names())
-        ttk.Style().theme_use('default')
-        ttk.Style().configure("Treeview", background="#383838", foreground="green")
-        ttk.Style().configure("Treeview.Heading", background="green", foreground="blue")
-        '''
-
-    '''
     def LoadStockTableColor(self):
+
+        self.labels = []
+        style = ttk.Style()
+        style.configure("red.TLabel", background='red')
+        style.configure("green.TLabel", background='green')
+        style.configure("header.TLabel", font = '-weight bold')
+        width = 7
+        height = 7
+        self.table.set(new_rand_df())
+        #self.table = GridView(self)
+        self.table.grid()
+
+        '''    
         self.table = GridView(self)
         self.table.pack()
         self.table.set(new_rand_df())
+        '''
+
+    '''
+    self.labels = []
+    style = ttk.Style()
+    style.configure("red.TLabel", background='red')
+    style.configure("green.TLabel", background='green')
+    style.configure("header.TLabel", font = '-weight bold')
+    for x in range(0, number_of_stocks_int):
+       self.labels.append('', 'end',
+                             text=stock_name[x], values=(
+                             '%.2f' % stock_current_pricefloat_list[x] + ' ' + stock_currency[x],
+                             '%.2f' % previous_stock_closefloat_list[x] + ' ' + stock_currency[x],
+                             '%.2f' % stock_daily_change_pers_list[x] +
+                             ' %', '%.2f' % buy_price_recommendations_list[x] + ' ' + stock_currency[x],
+                             '%.2f' % low_price_list[x] + ' ' + stock_currency[x],
+                             buy_recommendation_list[x],
+                             amount_list[x],
+                             '%.2f' % gav_kurs_list[x] + ' ' + stock_currency[x],
+                             '%.2f' % percentage_list[x] +
+                             ' %', '%.2f' % max_pers_of_investments_list[x] + ' %',
+                             '%.2f' % stock_paid_list[x] + ' ' + currency,
+                             '%.2f' % stockvalue_list[x] + ' ' + currency,
+                             '%.2f' % stock_diff_list[x] + ' ' + currency,
+                             '%.2f' % total_change_list[x] + ' %',
+                             sales_target[x]))
     '''
 
-    def LoadSummaryTable(self):
 
-        #ttk.Style().configure("Treeview", background="#636363", foreground="white")
+    def LoadSummaryTable(self):
         self.treeview.insert('', 'end', text='', values=('', '', '%.2f' % daily_portfolio_development +
                                                          ' %', '', '', '', '', '%.2f' % stockspercentage +
                                                          ' %', stocks_max_pers_of_investments +
@@ -830,14 +627,6 @@ class Stocktable(Frame):
         '%.2f' % stockspercentage + '%', '', '', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Other percentage of investments', values=(
         '%.2f' % otherinvestmentspercentage + '%', '', '', '', '', '', '', '', '', '', '', '', ''))
-        #text = self.Text(root, selectbackground="red", inactiveselectbackground="blue")
-        #text.pack()
-        #style = ttk.Style()
-        #ttk.Style().configure("Treeview", background="#383838", foreground="white", fieldbackground="red")
-        #self.ttk.Combobox().pack()
-        #self.tag_configure('oddrow', background='orange')
-        #self.tag_configure('evenrow', background='purple')
-
 
     def CreateUIPersonalData(self):
         tv = Treeview(self)
@@ -896,46 +685,6 @@ class Stocktable(Frame):
         self.treeview.insert('', 'end', text='Net worth', values=(
         '%.f' % net_worth  + ' ' + currency, 'Monthly loan payment', '%.f' % monthly_loan_payments + ' ' + currency, '', '', '', '', '', '', '', '', '', ''))
 
-
-'''   class Piechart(Frame):
-        def __init__(self, parent):
-            self.Pie()
-
-        def Pie(self):
-'''
-
-'''
-PADDING = dict(padx=3, pady=3)
-class GridView(Frame):
-    def __init__(self, master=None, **kwargs):
-        Frame.__init__(self, master, **kwargs)
-        self.labels = []
-        style = ttk.Style()
-        style.configure("red.TLabel", background='red')
-        style.configure("green.TLabel", background='green')
-        style.configure("header.TLabel", font = '-weight bold')
-
-    def set(self, df):
-        self.clear()
-        for col, name in enumerate(df.columns):
-            lbl = ttk.Label(self, text=name, style='header.TLabel')
-            lbl.grid(row=0, column=col, **PADDING)
-            self.labels.append(lbl)
-
-        for row, values in enumerate(df.itertuples(), 1):
-            for col, value in enumerate(values[1:]):
-                lbl = ttk.Label(self, text=value, style=self.get_style(value))
-                lbl.grid(row=row, column=col, **PADDING)
-                self.labels.append(lbl)
-
-
-def new_rand_df():
-    width = 10
-    height = 10
-    return pd.DataFrame([[randrange(100) for _ in range(width)] for _ in range(height)],
-                        columns=list('abcdefghijklmnopqrstuvwxyz'[:width]))
-
-'''
 def piechart():
     labels = 'Gold', 'Cash', 'Stocks', 'Other Investments'
     sizes = [gold, cashfloat, sumofallstocks, other_investmentsfloat]
@@ -947,8 +696,6 @@ def piechart():
     autopct='%3.2f%%', shadow=True, startangle=90)
     plt.title("Investments")
     plt.axis('equal')
-    #fig = pyplot.gcf()
-    #fig.canvas.set_window_title('My title')
     plt.show()
 
 def piechart_inc_apartment():
@@ -962,8 +709,6 @@ def piechart_inc_apartment():
     autopct='%3.2f%%', shadow=True, startangle=90)
     plt.title("Investments, including cash in apartment")
     plt.axis('equal')
-    #fig = pyplot.gcf()
-    #fig.canvas.set_window_title('My title')
     plt.show()
 
 def my_stocks():
@@ -1041,52 +786,13 @@ def my_stocks():
         stocks_tk.save_button = tkinter.Button(stocks_tk, text="Save", command=donothing)
         stocks_tk.save_button.grid(row=x+2, column=8, sticky=tkinter.W)
 
-'''
-    
-    
-    max_pers_of_investments
-    amount
-    gav_kurs
-    stock_currency
-    stock_web_page
-'''
-
-'''
-    stocks_tk.debt_label = tkinter.Label(stocks_tk, text="Debt:")
-    stocks_tk.debt_entry = tkinter.Entry(stocks_tk)
-    stocks_tk.debt_entry.insert(10, debtfloat)
-    stocks_tk.debt_label.grid(row=1, column=0, sticky=tkinter.W)
-    stocks_tk.debt_entry.grid(row=1, column=1)
-'''
-    #stocks_tk.grid()
 
 def personal_data():
     personal = Tk()
-    #e1 = Entry(personal)
-    #namefield = e1.get()
     personal.title("Personal Data")
     personal.grid_rowconfigure(0, weight=1)
     personal.grid_columnconfigure(0, weight=1)
-    #personal.parent.geometry("1000x1000")
     personal.config(background="lightblue")
-    #personal.treeview.insert('', 'end', text='hgjhgjkghjghj', values=(
-    #    '%.2f' % cashpercentage + '%', '', '', '', '', '', '', '', '', '', '', '', ''))
-    #personal.pack()
-
-    '''
-    personal.name_entry.insert('', 'end', values=(personal.name_entry.get()))
-    personal.debt_entry.insert(10, debtfloat)
-    personal.debt_interest_rate_entry.insert(10, debt_interest_ratefloat)
-    personal.cash_account1_entry.insert(10, cash_account1_float)
-    personal.cash_account2_entry.insert(10, cash_account2_float)
-    personal.other_investments_entry.insert(10, other_investmentsfloat)
-    personal.gold_in_onz_entry.insert(10, goldonzfloat)
-    personal.minimum_buy_entry.insert(10, minimumbuyfloat)
-    personal.currency_entry.insert(10, currency)
-    personal.max_pers_of_investments_entry.insert(10, stocks_max_pers_of_investments_float)
-    personal.number_of_stocks_entry.insert(10, number_of_stocks_int)
-    '''
-
 
     personal.name_label = tkinter.Label(personal, text="Name:")
     personal.name_entry = tkinter.Entry(personal)
@@ -1126,8 +832,6 @@ def personal_data():
 
     personal.gold_in_onz_label = tkinter.Label(personal, text="Gold in Onz:")
     personal.gold_in_onz_entry = tkinter.Entry(personal)
-    jee = personal.gold_in_onz_entry.get()
-    #print(jee)
     personal.gold_in_onz_entry.insert(10, goldonzfloat)
     personal.gold_in_onz_label.grid(row=6, column=0, sticky=tkinter.W)
     personal.gold_in_onz_entry.grid(row=6, column=1)
@@ -1161,65 +865,6 @@ def personal_data():
 
     personal.grid()
 
-
-'''
-class personal_data(tkinter.Frame):
-
-    def __init__(self, parent):
-
-        tkinter.Frame.__init__(self, parent)
-        self.parent=parent
-        self.initialize_user_interface()
-
-    def initialize_user_interface(self):
-        """Draw a user interface allowing the user to type
-        items and insert them into the treeview
-        """
-        self.parent.title("Canvas Test")
-        self.parent.grid_rowconfigure(0,weight=1)
-        self.parent.grid_columnconfigure(0,weight=1)
-        self.parent.config(background="lavender")
-
-
-        # Define the different GUI widgets
-        self.dose_label = tkinter.Label(self.parent, text = "Dose:")
-        self.dose_entry = tkinter.Entry(self.parent)
-        self.dose_label.grid(row = 0, column = 0, sticky = tkinter.W)
-        self.dose_entry.grid(row = 0, column = 1)
-
-        self.modified_label = tkinter.Label(self.parent, text = "Date Modified:")
-        self.modified_entry = tkinter.Entry(self.parent)
-        self.modified_label.grid(row = 1, column = 0, sticky = tkinter.W)
-        self.modified_entry.grid(row = 1, column = 1)
-
-        self.submit_button = tkinter.Button(self.parent, text = "Insert", command = self.insert_data)
-        self.submit_button.grid(row = 2, column = 1, sticky = tkinter.W)
-        self.exit_button = tkinter.Button(self.parent, text = "Exit", command = self.parent.quit)
-        self.exit_button.grid(row = 0, column = 3)
-
-        # Set the treeview
-        self.tree = ttk.Treeview( self.parent, columns=('Dose', 'Modification date'))
-        self.tree.heading('#0', text='Item')
-        self.tree.heading('#1', text='Dose')
-        self.tree.heading('#2', text='Modification Date')
-        self.tree.column('#1', stretch=tkinter.YES)
-        self.tree.column('#2', stretch=tkinter.YES)
-        self.tree.column('#0', stretch=tkinter.YES)
-        self.tree.grid(row=4, columnspan=4, sticky='nsew')
-        self.treeview = self.tree
-        # Initialize the counter
-        self.i = 0
-
-
-    def insert_data(self):
-        """
-        Insertion method.
-        """
-        self.treeview.insert('', 'end', text="Item_"+str(self.i), values=(self.dose_entry.get()+" mg", self.modified_entry.get()))
-        # Increment counter
-        self.i = self.i + 1
-'''
-
 def donothing():
     filewin = Toplevel()
     button = Button(filewin, text="Do nothing button")
@@ -1245,19 +890,10 @@ def write_personal_data(personal):
         writer.writerow({'PersonalAttribute': 'stock_max_pers_of_investments', 'AttributeValue': personal.max_pers_of_investments_entry.get()})
         writer.writerow({'PersonalAttribute': 'number_of_stocks', 'AttributeValue': personal.number_of_stocks_entry.get()})
 
-'''
-    spamwriter = csv.writer(csvfile, delimiter=' ',
-                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    spamwriter.writerow(['Spam'] * 5 + ['Baked Beans'])
-    spamwriter.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
-'''
-
-
 def main():
 
     #Creates main window
     root = Tk()
-    #root.resizable(width=False, height=False) #If this is enabled, then you cannot adjust the size of main window
     root.wm_title("Stock Portfolio")
     Stocktable(root)
 
@@ -1265,36 +901,10 @@ def main():
     filemenu = Menu(menubar, tearoff=0)
 
 
-
     filemenu.add_command(label="Personal Data", command=personal_data)
     filemenu.add_command(label="My Stocks", command=my_stocks)
-    '''
-    filemenu.add_command(label="Save", command=donothing)
-    filemenu.add_command(label="Save as...", command=donothing)
-    filemenu.add_command(label="Close", command=donothing)
-    filemenu.add_separator()
-    '''
     filemenu.add_command(label="Exit", command=quit)
     menubar.add_cascade(label="Settings", menu=filemenu)
-
-    '''
-    editmenu = Menu(menubar, tearoff=0)
-    editmenu.add_command(label="Undo", command=donothing)
-    editmenu.add_separator()
-    editmenu.add_command(label="Cut", command=donothing)
-    editmenu.add_command(label="Copy", command=donothing)
-    editmenu.add_command(label="Paste", command=donothing)
-    editmenu.add_command(label="Delete", command=donothing)
-    editmenu.add_command(label="Select All", command=donothing)
-    menubar.add_cascade(label="Edit", menu=editmenu)
-    '''
-
-    '''
-    helpmenu = Menu(menubar, tearoff=0)
-    helpmenu.add_command(label="Help Index", command=donothing)
-    helpmenu.add_command(label="About...", command=donothing)
-    menubar.add_cascade(label="Help", menu=helpmenu)
-    '''
 
     graphmenu = Menu(menubar, tearoff=0)
     graphmenu.add_command(label="Investments Chart - Pie Diagram", command=piechart)

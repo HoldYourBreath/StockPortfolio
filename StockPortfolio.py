@@ -79,6 +79,8 @@ krypto_max_pers_of_investments = kryptosfile.KryptoMaxAllowedPersofInv
 krypto_gav_kurs = kryptosfile.KryptoAveragePaid
 krypto_currency = kryptosfile.Currency
 krypto_web_page = kryptosfile.KryptoWebPage
+krypto_forum_web_page = kryptosfile.KryptoForumWebPage
+krypto_forum_old_value = kryptosfile.KryptoForumOldValue
 
 #personal_data.csv
 name = personal_data_file.AttributeValue[0]
@@ -117,9 +119,25 @@ annual_salary = float(personal_data_file.AttributeValue[18])
 dollar_goal = float(personal_data_file.AttributeValue[19])
 number_of_kryptos = personal_data_file.AttributeValue[20]
 krypto_total_max_pers_of_investments = personal_data_file.AttributeValue[21]
-print(krypto_max_pers_of_investments)
+cash_total_max_pers_of_investments = personal_data_file.AttributeValue[22]
+real_estate_1_total_max_pers_of_investments = personal_data_file.AttributeValue[23]
+real_estate_2_total_max_pers_of_investments = personal_data_file.AttributeValue[24]
+real_estate_3_total_max_pers_of_investments = personal_data_file.AttributeValue[25]
+other_investments_total_max_pers_of_investments = personal_data_file.AttributeValue[26]
+loan_given_total_max_pers_of_investments = personal_data_file.AttributeValue[27]
+gold_total_max_pers_of_investments = personal_data_file.AttributeValue[28]
+real_estate_1_paid_amount = personal_data_file.AttributeValue[29]
+real_estate_2_paid_amount = personal_data_file.AttributeValue[30]
+real_estate_3_paid_amount = personal_data_file.AttributeValue[31]
+
+real_estate_1_paid_amount_float = float(real_estate_1_paid_amount)
+real_estate_2_paid_amount_float = float(real_estate_2_paid_amount)
+real_estate_3_paid_amount_float = float(real_estate_3_paid_amount)
+
+
+#print(krypto_max_pers_of_investments)
 number_of_kryptos_int = int(number_of_kryptos)
-print(number_of_kryptos_int)
+#print(number_of_kryptos_int)
 #krypto_max_pers_of_investments_float = float(krypto_max_pers_of_investments)
 
 #Stock name
@@ -231,58 +249,38 @@ def returnexchangerate(xecurrencywebpage):
     tree = html.fromstring(page.content)
     rate = tree.xpath('//*[@id="ucc-container"]/span[2]/span[2]/text()')
     ratestr = ''.join(rate)
-    exchangeratefloat = float(ratestr.replace(',', '.'))
+    print("ratestr: ",ratestr)
+    replacespace = ratestr.replace('\xa0', '')
+    exchangeratefloat = float(replacespace.replace(',', '.'))
+    print("exchangeratefloat: ", exchangeratefloat)
     return exchangeratefloat
 
+eursekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=SEK')
 cadsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=CAD&To=SEK')
 usdsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=USD&To=SEK')
 phpsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=PHP&To=SEK')
 cadeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=CAD&To=EUR')
 usdeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=USD&To=EUR')
 
+sekeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=EUR')
 sekcadratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=CAD')
 sekusdratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=USD')
 sekphpratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=PHP')
 eurcadratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=EUR&To=CAD')
 eurusdratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=USD')
-
+xauusdratefloat = returnexchangerate('https://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=XAU&To=USD')
 
 cash_in_apartment3_float1 = float(cash_in_apartment3)
 cash_in_apartment3_float = cash_in_apartment3_float1 * phpsekratefloat
 
-#('//*[@id="content"]/div/div/div[1]/div/div[4]/div[2]/text()')
-#//*[@id="content"]/div/div/div[3]/div[3]/div/table/tbody/tr[1]/td[3]
-#//*[@id="indicatorbox"]/ul/li[2]/ul/li[2]/span[1]
-#Gold Price svd.se
-def returngoldusd():
-    goldpage = requests.get('https://bors-nliv.svd.se/')
-    #goldpage = requests.get('https://www.bloomberg.com/markets/commodities/futures/metals')
-    goldtree = html.fromstring(goldpage.content)
-    #print(goldtree)
-    goldrate = goldtree.xpath('normalize-space(//*[@id="indicatorbox"]/ul/li[2]/ul/li[2]/span[1]/text())')
-    #goldrate = goldtree.xpath('normalize-space(//*[@id="content"]/div/div/div[3]/div[3]/div/tr[1]/td[3]/text())')
-    #goldrate = goldtree.xpath('normalize-space(//*[@id="content"]/div/div/div[3]/div[3]/div/tr[1]/text())')
-    #print(goldrate)
-    goldratestr = ''.join(goldrate)
-    print(goldratestr)
-    #exchangeratefloat = float(ratestr.replace(',', '.'))
-    #goldratefloat = float(goldratestr.replace(',', ''))
-    goldratefloat = float(goldratestr.replace(' ', ''))
-    return goldratefloat
-
 def returngoldusdchangepers():
     goldpage = requests.get('https://bors-nliv.svd.se/index.php/ravaror')
-    #goldpage = requests.get('https://www.bloomberg.com/markets/commodities/futures/metals')
     goldtree = html.fromstring(goldpage.content)
     #print(goldtree)
     goldrate = goldtree.xpath('//*[@id="72831"]/td[3]/span[1]/text()')
-    #goldrate = goldtree.xpath('normalize-space(//*[@id="content"]/div/div/div[3]/div[3]/div/tr[1]/td[3]/text())')
-    #goldrate = goldtree.xpath('normalize-space(//*[@id="content"]/div/div/div[3]/div[3]/div/tr[1]/text())')
-    print(goldrate)
+    #print(goldrate)
     goldratestr = ''.join(goldrate)
-    print(goldratestr)
-    #exchangeratefloat = float(ratestr.replace(',', '.'))
-    #goldratefloat = float(goldratestr.replace(',', ''))
+    #print(goldratestr)
     replaceminus = goldratestr.replace('−', '-')
     goldratechangepersfloat = float(replaceminus.replace(',', '.'))
     print(goldratechangepersfloat)
@@ -294,11 +292,11 @@ def returnoilusd():
     oiltree = html.fromstring(oilpage.content)
     print(oiltree)
     oilrate = oiltree.xpath('normalize-space(//*[@id="indicatorbox"]/ul/li[2]/ul/li[1]/span[1]/text())')
-    print(oilrate)
+    print('oilrate: ', oilrate)
     oilratestr = ''.join(oilrate)
-    print(oilratestr)
+    print('oilratestr: ', oilratestr)
     oilratefloat = float(oilratestr.replace(',', '.'))
-    print(oilratefloat)
+    print('oilratefloat: ', oilratefloat)
     return oilratefloat
 
 def returnoilusdchangepers():
@@ -307,18 +305,15 @@ def returnoilusdchangepers():
     oiltree = html.fromstring(oilpage.content)
     #print(goldtree)
     oilrate = oiltree.xpath('//*[@id="42051"]/td[3]/span[1]/text()')
-    #goldrate = goldtree.xpath('normalize-space(//*[@id="content"]/div/div/div[3]/div[3]/div/tr[1]/td[3]/text())')
-    #goldrate = goldtree.xpath('normalize-space(//*[@id="content"]/div/div/div[3]/div[3]/div/tr[1]/text())')
-    print(oilrate)
+    #print(oilrate)
     oilratestr = ''.join(oilrate)
-    print(oilratestr)
-    #exchangeratefloat = float(ratestr.replace(',', '.'))
-    #goldratefloat = float(goldratestr.replace(',', ''))
-    replaceminus = oilratestr.replace('−', '-')
+    #print(oilratestr)
+    replaceplus = oilratestr.replace('+', '')
+    replaceminus = replaceplus.replace('−', '-')
     oilratechangepersfloat = float(replaceminus.replace(',', '.'))
-    print(oilratechangepersfloat)
+    #print(oilratechangepersfloat)
     return oilratechangepersfloat
-
+'''
 def returngoldusdgdx():
     goldgdxpage = requests.get('http://www.nasdaq.com/symbol/gdx')
     goldgdxtree = html.fromstring(goldgdxpage.content)
@@ -330,14 +325,15 @@ def returngoldusdgdx():
     goldgdxratefloat = float(goldgdxratestr.replace('$', ''))
     return goldgdxratefloat
 
+
 def returngoldusdgdxperschange():
     goldgdxperschangepage = requests.get('http://www.nasdaq.com/symbol/gdx')
     goldgdxperschangetree = html.fromstring(goldgdxperschangepage.content)
     #print(goldtree)
     goldgdxperschangerate = goldgdxperschangetree.xpath('//*[@id="qwidget_percent"]/text()')
-    print(goldgdxperschangerate)
+    print('goldgdxperschangerate: ', goldgdxperschangerate)
     goldgdxperschangeratestr = ''.join(goldgdxperschangerate)
-    print(goldgdxperschangeratestr)
+    print('goldgdxperschangeratestr: ', goldgdxperschangeratestr)
     replaceminus = goldgdxperschangeratestr.replace('−', '-')
     goldgdxperschangeratefloat = float(replaceminus.replace('%', ''))
     print(goldgdxperschangeratefloat)
@@ -366,7 +362,42 @@ def returngoldusdgdxjperschange():
     goldgdxjperschangeratefloat = float(replaceminus.replace('%', ''))
     print(goldgdxjperschangeratefloat)
     return goldgdxjperschangeratefloat
+'''
 
+def returnkryptoforumreaders(kryptoforumreaderswebpage):
+    #kryptoforumreaderspage = requests.get('https://www.reddit.com/r/Metaverse_Blockchain/')
+    print('kryptoforumreaderswebpage1: ', kryptoforumreaderswebpage)
+    if kryptoforumreaderswebpage == '0':
+        print('kryptoforumreaderswebpage1 if 1: ', kryptoforumreaderswebpage)
+        #kryptoforumreadersfloat = ''
+        kryptoforumreadersstr = ''
+    elif kryptoforumreaderswebpage != '0':
+        kryptoforumreaderspage = requests.get(kryptoforumreaderswebpage)
+        print('kryptoforumreaderswebpage2 if 2: ', kryptoforumreaderswebpage)
+        kryptoforumreaderstree = html.fromstring(kryptoforumreaderspage.content)
+        print('kryptoforumreaderstree: ', kryptoforumreaderstree)
+        kryptoforumreadersrate = kryptoforumreaderstree.xpath('normalize-space(/html/body/div[3]/div[5]/div/span[2]/span[1]/text())')
+        print('kryptoforumreadersrate 1: ', kryptoforumreadersrate)
+        if kryptoforumreadersrate == '':
+            kryptoforumreadersrate = kryptoforumreaderstree.xpath('normalize-space(/html/body/div[3]/div[4]/div/span[2]/span[1]/text())')
+            print('kryptoforumreadersrate 2: ', kryptoforumreadersrate)
+            if kryptoforumreadersrate == '':
+                kryptoforumreadersrate = kryptoforumreaderstree.xpath('normalize-space(/html/body/div[3]/div[5]/div/span[2]/span[1]/text())')
+                print('kryptoforumreadersrate 3: ', kryptoforumreadersrate)
+                if kryptoforumreadersrate == '':
+                    kryptoforumreadersrate = kryptoforumreaderstree.xpath(
+                        'normalize-space(/html/body/div[3]/div[5]/div/span[2]/span[1]/text())')
+                    print('kryptoforumreadersrate 4: ', kryptoforumreadersrate)
+        print('kryptoforumreadersrate: ', kryptoforumreadersrate)
+        kryptoforumreadersstr = ''.join(kryptoforumreadersrate)
+        print('kryptoforumreadersstr: ', kryptoforumreadersstr)
+        #kryptoforumreadersfloat = float(kryptoforumreadersstr.replace(',', ''))
+        #print('kryptoforumreadersfloat: ', kryptoforumreadersfloat)
+    return kryptoforumreadersstr
+
+#kryptoforumreaders = returnkryptoforumreaders()
+
+#print('kryptoforumreaders: ', kryptoforumreaders)
 
 ########################
 #Stock prices
@@ -375,9 +406,13 @@ def returngoldusdgdxjperschange():
 def stockcurrentpricebloomberg(bloombergwebpage):
     page = requests.get(bloombergwebpage)
     tree = html.fromstring(page.content)
-    price = tree.xpath('//*[@id="content"]/div/div/div[1]/div/div[4]/div[2]/text()')
+    #price = tree.xpath('//*[@id="content"]/div/div/div[1]/div/div[4]/div[2]/text()')
+    price = tree.xpath('//*[@id="root"]/div/div/section[2]/div[1]/div/section[1]/section[1]/section[2]/section/div[1]/span[1]/text()')
+    print("price: ", price)
     pricestr = ''.join(price)
+    print("pricestr: ", pricestr)
     stockcurrentpricebloombergfloat = float(pricestr)
+    print("stockcurrentpricebloombergfloat: ", stockcurrentpricebloombergfloat)
     return stockcurrentpricebloombergfloat
 
 stock_current_pricefloat_list = []  
@@ -391,13 +426,18 @@ def kryptocurrentprice(kryptowebpage):
     print("page: ", page)
     tree = html.fromstring(page.content)
     print("tree: ", tree)
-    price = tree.xpath('//span[@id="quote_price"]/text()')
+    price = tree.xpath('//span[@id="quote_price"]/span[1]/text()')
     print("Price: ", price)
     pricestr = ''.join(price)
     print("Pricestr: ", pricestr)
-    pricefloat = float(pricestr.replace('$', ' '))
-    print("pricefloat: ", pricefloat)
-    return pricefloat
+    if pricestr == '?':
+        pricefloat = 0
+        
+        return pricefloat
+    else:
+        pricefloat = float(pricestr.replace('$', ' '))
+        print("pricefloat: ", pricefloat)
+        return pricefloat
 
 #krypto_current_pricefloat_list
 krypto_current_pricefloat_list = []
@@ -409,7 +449,8 @@ for x in range(0, number_of_kryptos_int):
 def previousstockclose(bloombergwebpage):
     page = requests.get(bloombergwebpage)
     tree = html.fromstring(page.content)
-    change = tree.xpath('//*[@id="content"]/div/div/div[8]/div/div/div[4]/div[2]/text()')
+    #change = tree.xpath('//*[@id="content"]/div/div/div[8]/div/div/div[4]/div[2]/text()')
+    change = tree.xpath('//*[@id="root"]/div/div/section[2]/div[1]/div/section[1]/div/section/section[2]/div/text()')
     changestr = ''.join(change)
     previousstockclosefloat = float(changestr)
     return previousstockclosefloat
@@ -458,8 +499,12 @@ def krypto24hvolume(kryptowebpage):
     print("Pkrypto24hvolumestr: ", krypto24hvolumestr)
     krypto24hvolumestr1 = krypto24hvolumestr.replace('$', ' ')
     print("krypto24hvolumestr1: ", krypto24hvolumestr1)
-    krypto24hvolumefloat = float(krypto24hvolumestr1.replace(',', ''))
-    print("krypto24hvolumefloat: ", krypto24hvolumefloat)
+    if (krypto24hvolumestr1 == '?' or krypto24hvolumestr1 == ''):
+        krypto24hvolumestr1 = '0'
+        krypto24hvolumefloat = float(krypto24hvolumestr1)
+    else:
+        krypto24hvolumefloat = float(krypto24hvolumestr1.replace(',', ''))
+        print("krypto24hvolumefloat: ", krypto24hvolumefloat)
     return krypto24hvolumefloat
 
 def krypto24hchangepers(kryptowebpage):
@@ -476,9 +521,13 @@ def krypto24hchangepers(kryptowebpage):
     print("pricestr1: ", pricestr1)
     pricestr2 = pricestr1.replace(')', '')
     print("pricestr2: ", pricestr2)
-    pricefloat = float(pricestr2.replace('%', ''))
-    print("pricefloat: ", pricefloat)
-    return pricefloat
+    if pricestr2 == '':
+        pricefloat = 0
+        return pricefloat
+    else:
+        pricefloat = float(pricestr2.replace('%', ''))
+        print("pricefloat: ", pricefloat)
+        return pricefloat
 
 krypto_daily_change_pers_list = []
 for x in range(0, number_of_kryptos_int):
@@ -487,6 +536,14 @@ for x in range(0, number_of_kryptos_int):
 krypto24hvolume_list = []
 for x in range(0, number_of_kryptos_int):
     krypto24hvolume_list = krypto24hvolume_list + [(krypto24hvolume(krypto_web_page[x]))]
+
+krypto_forum_list = []
+for x in range(0, number_of_kryptos_int):
+    krypto_forum_list = krypto_forum_list + [(returnkryptoforumreaders(krypto_forum_web_page[x]))]
+
+krypto_forum_old_value_list = []
+for x in range(0, number_of_kryptos_int):
+    krypto_forum_old_value_list = krypto_forum_old_value_list + [krypto_forum_old_value[x]]
 
 #Calculations
 
@@ -515,22 +572,26 @@ def lastkryptopricechange(previouskryptoclose, currentkryptoprice):
     return change
 
 #Value of Gold
-goldusd = returngoldusd()
-goldsek = returngoldusd() * usdsekratefloat
+
+goldusd = xauusdratefloat
+goldsek = xauusdratefloat * usdsekratefloat
 gold = goldsek * goldonzfloat
-goldgdxusd = returngoldusdgdx()
-goldgdxperschange = returngoldusdgdxperschange()
-goldgdxjusd = returngoldusdgdxj()
-goldgdxjperschange = returngoldusdgdxjperschange()
-
-goldusdchangepers = returngoldusdchangepers()
-oilusdchangepers = returnoilusdchangepers()
 
 
+#goldgdxusd = returngoldusdgdx()
+#goldgdxperschange = returngoldusdgdxperschange()
+#goldgdxjusd = returngoldusdgdxj()
+#goldgdxjperschange = returngoldusdgdxjperschange()
+
+#This should be enabled!!! Stopped working all of the sudden
+#goldusdchangepers = returngoldusdchangepers()
+
+#This should be enabled
+#oilusdchangepers = returnoilusdchangepers()
 
 #Value of Oil
-oilusd = returnoilusd()
-oilsek = returnoilusd() * usdsekratefloat
+#oilusd = returnoilusd()
+#oilsek = returnoilusd() * usdsekratefloat
 
 #Financial goal in SEK
 sek_goal = dollar_goal * usdsekratefloat
@@ -552,6 +613,8 @@ for x in range(0, number_of_stocks_int):
     stock_exchangerate_from_list = stock_exchangerate_from_list + [stock_currency[x] + currency]
 
 krypto_exchangerate_from_list = []
+
+
 for x in range(0, number_of_kryptos_int):
     krypto_exchangerate_from_list = krypto_exchangerate_from_list + [krypto_currency[x] + currency]
 
@@ -564,8 +627,8 @@ for x in range(0, number_of_kryptos_int):
     krypto_exchangerate_list = krypto_exchangerate_list + [returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=' + krypto_exchangerate_from_list[x] + '&To=' + currency + '')]
     #krypto_exchangerate_list = krypto_exchangerate_list + [1]
 
-print(stock_exchangerate_from_list)
-print(stock_exchangerate_list)
+#print(stock_exchangerate_from_list)
+#print(stock_exchangerate_list)
 
 
 stockvalue_list = []
@@ -579,6 +642,7 @@ for x in range(0, number_of_kryptos_int):
     #kryptovalue_list = kryptovalue_list + [kryptovalue(krypto_amount_list[x], 1, 1)]
 
 # Daily % change in stock value
+
 stock_daily_change_pers_list = []
 for x in range(0, number_of_stocks_int):
     stock_daily_change_pers_list = stock_daily_change_pers_list + [laststockpricechange(previous_stock_closefloat_list[x], stock_current_pricefloat_list[x])]
@@ -608,6 +672,10 @@ def stockdifference(totalvalue, totalpaid):
 def kryptodifference(totalvalue, totalpaid):
     return totalvalue-totalpaid
 
+#Difference in price, current value - paid value
+def realestatedifference(totalvalue, totalpaid):
+    return totalvalue-totalpaid
+
 stock_diff_list = []
 for x in range(0, number_of_stocks_int):
     stock_diff_list = stock_diff_list + [stockdifference(stockvalue_list[x], stock_paid_list[x])]
@@ -615,6 +683,10 @@ for x in range(0, number_of_stocks_int):
 krypto_diff_list = []
 for x in range(0, number_of_kryptos_int):
     krypto_diff_list = krypto_diff_list + [kryptodifference(kryptovalue_list[x], krypto_paid_list[x])]
+
+real_estate_1_difference = realestatedifference(float(current_est_value_apartment), real_estate_1_paid_amount_float)
+real_estate_2_difference = realestatedifference(cash_in_apartment2_float, real_estate_2_paid_amount_float)
+real_estate_3_difference = realestatedifference(cash_in_apartment3_float, real_estate_3_paid_amount_float)
 
 # Daily % change in stock value
 stock_total_pers_change_list = []
@@ -664,8 +736,7 @@ sumofallrealestate = cash_in_apartment1 + cash_in_apartment2_float + cash_in_apa
 #Total sum of all investments
 sumofinvestments = cashfloat + sumofallstocks + sumofallkryptos + sumofallrealestate + gold + other_investmentsfloat + loan_given_float
 
-
-net_worth = cash_in_apartment1 + sumofinvestments
+net_worth = sumofinvestments - debtfloat
 missing_from_goal = sek_goal - net_worth
 
 #Stock previous close value
@@ -715,6 +786,10 @@ stocks_total_change = 100 * allstocksdifference / total_stocks_paid_value
 #Total % change, all kryptos
 kryptos_total_change = 100 * allkryptosdifference / total_kryptos_paid_value
 
+#Total % change Real Estates
+real_esteate_1_total_change = 100 * real_estate_1_difference / real_estate_1_paid_amount_float
+real_esteate_2_total_change = 100 * real_estate_2_difference / real_estate_2_paid_amount_float
+real_esteate_3_total_change = 100 * real_estate_3_difference / real_estate_3_paid_amount_float
 ########################
 #Algorithms
 ########################
@@ -810,33 +885,18 @@ def highlight_max(data, color='yellow'):
 print('--------------------------------------------------------------------------------')
 print('************ Welcome to Stock Portfolio,', name, '************')
 print('--------------------------------------------------------------------------------')
-print('Canadian/Swedish exchange rate, 1 CAD =', cadsekratefloat, 'SEK')
-print('USD/Swedish exchange rate, 1 USD =', usdsekratefloat, 'SEK')
-print('Canadian/Euro exchange rate, 1 CAD =', cadeurratefloat, 'EUR')
-print('Current Gold rate', goldusd, '$/Onz,','%.2f' % goldsek, 'SEK/Onz')
-print('--------------------------------------------------------------------------------')
-print("Debt", debt, currency)
-print("Debt Interest rate", debt_interest_rate, '%')
-print("Minimum buy", minimumbuyfloat, currency)
-print("Cash in Account 1:", cash_account1_float, currency)
-print("Cash in Account 2:", cash_account2_float, currency)
-print("All available Cash", cashfloat, currency)
-print("Other Investments", other_investmentsfloat, currency)
-print("Gold", '%.2f' % gold, currency)
-print("Sum of all stocks", '%.2f' % sumofallstocks, currency)
-print("Sum of all kryptos", '%.2f' % sumofallkryptos, currency)
-print("Sum of all stocks paid", '%.2f' % total_stocks_paid_value, currency)
-print("All stocks difference", '%.2f' % allstocksdifference, currency)
-print("Sum of all investments", '%.2f' % sumofinvestments, currency)
 print("Stock Portfolio development today", '%.2f' % stocks_daily_portfolio_development, '%')
-print('--------------------------------------------------------------------------------')
-print("Cash percentage of investments", '%.2f' % cashpercentage, '%')
-print("Gold percentage of investments", '%.2f' % goldpercentage, '%')
-print("Stocks percentage of investments", '%.2f' % stockspercentage, '%')
-print("Other Investments percentage of investments", '%.2f' % otherinvestmentspercentage, '%')
 print('--------------------------------------------------------------------------------')
 print("Time updated: ", time.ctime())
 print('--------------------------------------------------------------------------------')
+
+print('krypto_forum_list[0]: ', krypto_forum_list[0])
+print('krypto_forum_list[1]: ', krypto_forum_list[1])
+print('krypto_forum_list[2]: ', krypto_forum_list[2])
+print('krypto_forum_list[3]: ', krypto_forum_list[3])
+print('krypto_forum_list[4]: ', krypto_forum_list[4])
+print('krypto_forum_list[5]: ', krypto_forum_list[5])
+
 
 def new_rand_df():
     width = 10
@@ -879,21 +939,21 @@ class Kryptotable(Frame):
 
     def CreateUIKrypto(self):
         tv = Treeview(self)
-        tv['columns'] = ('KryptoCurrentPrice', 'Krypto24hPrice', 'Krypto24hChange', 'Krypto24hVol', 'KryptoAmount',
+        tv['columns'] = ('KryptoCurrentPrice', 'KryptoAmount', 'Krypto24hPrice', 'Krypto24hChange', 'Krypto24hVol',
                          'KryptoAveragePaid', 'KryptoPersofinv', 'MaxAllowedPersofInv',
-                         'KryptoPaidValue', 'KryptoTotalValue', 'KryptoDiff', 'KryptoTotalChange')
+                         'KryptoPaidValue', 'KryptoTotalValue', 'KryptoDiff', 'KryptoTotalChange', 'KryptoForum','KryptoForumOldValue')
         tv.heading("#0", text='Krypto', anchor='w')
         tv.column("#0", anchor="w")
         tv.heading('KryptoCurrentPrice', text='KryptoCurrentPrice')
         tv.column('KryptoCurrentPrice', anchor='center', width=50)
+        tv.heading('KryptoAmount', text='KryptoAmount')
+        tv.column('KryptoAmount', anchor='center', width=50)
         tv.heading('Krypto24hPrice', text='Krypto24hPrice')
         tv.column('Krypto24hPrice', anchor='center', width=80)
         tv.heading('Krypto24hChange', text='Krypto24hChange')
         tv.column('Krypto24hChange', anchor='center', width=40)
         tv.heading('Krypto24hVol', text='Krypto24hVol')
         tv.column('Krypto24hVol', anchor='center', width=80)
-        tv.heading('KryptoAmount', text='KryptoAmount')
-        tv.column('KryptoAmount', anchor='center', width=50)
         tv.heading('KryptoAveragePaid', text='KryptoAveragePaid')
         tv.column('KryptoAveragePaid', anchor='center', width=40)
         tv.heading('KryptoPersofinv', text='% of Investments')
@@ -908,6 +968,10 @@ class Kryptotable(Frame):
         tv.column('KryptoDiff', anchor='center', width=80)
         tv.heading('KryptoTotalChange', text='KryptoTotalChange %')
         tv.column('KryptoTotalChange', anchor='center', width=80)
+        tv.heading('KryptoForum', text='KryptoForum %')
+        tv.column('KryptoForum', anchor='center', width=80)
+        tv.heading('KryptoForumOldValue', text='KryptoForumOldValue %')
+        tv.column('KryptoForumOldValue', anchor='center', width=80)
         tv.grid(sticky=(N, S, W, E))
         self.treeview = tv
 
@@ -915,18 +979,20 @@ class Kryptotable(Frame):
         for x in range(0, number_of_kryptos_int):
             self.treeview.insert('', 'end',
                                  text=krypto_name[x], values=(
-                                 '%.2f' % krypto_current_pricefloat_list[x] + ' $', #2 OK
-                                 '%.2f' % krypto_24h_price_list[x] + ' $', #3
-                                 '%.2f' % krypto_daily_change_pers_list[x] + ' %', #3 OK
-                                 '%.f' % krypto24hvolume_list[x] + ' $', #4 OK
-                                 '%.2f' % krypto_amount_list[x] + ' ', #5 OK
-                                 '%.2f' % krypto_gav_kurs_list[x] + ' ' + krypto_currency[x], #6 OK
-                                 '%.2f' % krypto_percentage_list[x] + ' %', #7 NOK
-                                 '%.2f' % krypto_max_pers_of_investments_list[x] + ' %', #10
-                                 '%.f' % krypto_paid_list[x] + ' ' + currency, #11
-                                 '%.f' % kryptovalue_list[x] + ' ' + currency, #12
-                                 '%.f' % krypto_diff_list[x] + ' ' + currency, #13
-                                 '%.2f' % krypto_total_pers_change_list[x] + ' %'
+                                 '%.2f' % krypto_current_pricefloat_list[x] + ' $',  #2 OK
+                                 '%.4f' % krypto_amount_list[x] + ' ',  # 5 OK
+                                 '%.2f' % krypto_24h_price_list[x] + ' $',  #3
+                                 '%.2f' % krypto_daily_change_pers_list[x] + ' %',  #3 OK
+                                 '%.f' % krypto24hvolume_list[x] + ' $',  #4 OK
+                                 '%.2f' % krypto_gav_kurs_list[x] + ' ' + krypto_currency[x],  #6 OK
+                                 '%.2f' % krypto_percentage_list[x] + ' %',  #7 NOK
+                                 '%.2f' % krypto_max_pers_of_investments_list[x] + ' %',  #10
+                                 '%.f' % krypto_paid_list[x] + ' ' + currency,  #11
+                                 '%.f' % kryptovalue_list[x] + ' ' + currency,  #12
+                                 '%.f' % krypto_diff_list[x] + ' ' + currency,  #13
+                                 '%.2f' % krypto_total_pers_change_list[x] + ' %',
+                                 krypto_forum_list[x],
+                                 krypto_forum_old_value_list[x]
                                  ))
 
         ttk.Style().configure("Treeview", background="white",
@@ -953,12 +1019,14 @@ class Stocktable(Frame):
 
     def CreateUIStock(self):
         tv = Treeview(self)
-        tv['columns'] = ('currprice', 'prevclose', 'daychangepers', 'buyunder', 'lowprice', 'highprice', 'recommendedbuy', 'amount', 'gav', 'persofinvestment',
-                         'maxpersofinvestment', 'paidvalue', 'totalvalue', 'difference', 'totalchange', 'selltarget')
+        tv['columns'] = ('currprice', 'amount', 'prevclose', 'daychangepers', 'buyunder', 'lowprice', 'highprice', 'recommendedbuy', 'gav', 'persofinvestment',
+                         'maxpersofinvestment', 'paidvalue', 'totalvalue', 'debt', 'difference', 'totalchange', 'selltarget')
         tv.heading("#0", text='Stock', anchor='w')
         tv.column("#0", anchor="w")
         tv.heading('currprice', text='Current Price')
         tv.column('currprice', anchor='center', width=80)
+        tv.heading('amount', text='Amount')
+        tv.column('amount', anchor='center', width=50)
         tv.heading('prevclose', text='Previous Close')
         tv.column('prevclose', anchor='center', width=80)
         tv.heading('daychangepers', text='Day Change %')
@@ -971,8 +1039,6 @@ class Stocktable(Frame):
         tv.column('highprice', anchor='center', width=50)
         tv.heading('recommendedbuy', text='Rec Buy')
         tv.column('recommendedbuy', anchor='center', width=50)
-        tv.heading('amount', text='Amount')
-        tv.column('amount', anchor='center', width=50)
         tv.heading('gav', text='Average paid GAV')
         tv.column('gav', anchor='center', width=80)
         tv.heading('persofinvestment', text='% of Investments')
@@ -983,6 +1049,8 @@ class Stocktable(Frame):
         tv.column('paidvalue', anchor='center', width=80)
         tv.heading('totalvalue', text='Total Value')
         tv.column('totalvalue', anchor='center', width=80)
+        tv.heading('debt', text='Debt')
+        tv.column('debt', anchor='center', width=80)
         tv.heading('difference', text='Difference')
         tv.column('difference', anchor='center', width=80)
         tv.heading('totalchange', text='Total Change %')
@@ -994,20 +1062,20 @@ class Stocktable(Frame):
 
     def CreateUIKrypto(self):
         tv = Treeview(self)
-        tv['columns'] = ('KryptoCurrentPrice', 'Krypto24hPrice', 'Krypto24hChange', 'Krypto24hVol', 'KryptoAmount', 'KryptoAveragePaid', 'KryptoPersofinv', 'MaxAllowedPersofInv',
-                         'KryptoPaidValue', 'KryptoTotalValue', 'KryptoDiff', 'KryptoTotalChange')
+        tv['columns'] = ('KryptoCurrentPrice', 'KryptoAmount', 'Krypto24hPrice', 'Krypto24hChange', 'Krypto24hVol', 'KryptoAveragePaid', 'KryptoPersofinv', 'MaxAllowedPersofInv',
+                         'KryptoPaidValue', 'KryptoTotalValue', 'KryptoDiff', 'KryptoTotalChange','KryptoForum','KryptoForumOldValue')
         tv.heading("#0", text='Krypto', anchor='w')
         tv.column("#0", anchor="w")
         tv.heading('KryptoCurrentPrice', text='KryptoCurrentPrice')
         tv.column('KryptoCurrentPrice', anchor='center', width=50)
+        tv.heading('KryptoAmount', text='KryptoAmount')
+        tv.column('KryptoAmount', anchor='center', width=50)
         tv.heading('Krypto24hPrice', text='Krypto24hPrice')
         tv.column('Krypto24hPrice', anchor='center', width=80)
         tv.heading('Krypto24hChange', text='Krypto24hChange')
         tv.column('Krypto24hChange', anchor='center', width=40)
         tv.heading('Krypto24hVol', text='Krypto24hVol')
         tv.column('Krypto24hVol', anchor='center', width=80)
-        tv.heading('KryptoAmount', text='KryptoAmount')
-        tv.column('KryptoAmount', anchor='center', width=50)
         tv.heading('KryptoAveragePaid', text='KryptoAveragePaid')
         tv.column('KryptoAveragePaid', anchor='center', width=40)
         tv.heading('KryptoPersofinv', text='% of Investments')
@@ -1022,18 +1090,24 @@ class Stocktable(Frame):
         tv.column('KryptoDiff', anchor='center', width=80)
         tv.heading('KryptoTotalChange', text='KryptoTotalChange %')
         tv.column('KryptoTotalChange', anchor='center', width=80)
+        tv.heading('KryptoForum', text='KryptoForum %')
+        tv.column('KryptoForum', anchor='center', width=80)
+        tv.heading('KryptoForumOldValue', text='KryptoForumOldValue %')
+        tv.column('KryptoForumOldValue', anchor='center', width=80)
         tv.grid(sticky = (N,S,W,E))
         self.treeview = tv
 
 
     def CreateUISummary(self):
         tv = Treeview(self)
-        tv['columns'] = ('currprice', 'prevclose', 'daychangepers', 'buyunder', 'recommendedbuy', 'amount', 'gav', 'gav2',
-                         'persofinvestment', 'maxpersofinvestment', 'paidvalue', 'totalvalue', 'difference', 'totalchange', 'selltarget')
+        tv['columns'] = ('currprice', 'amount', 'prevclose', 'daychangepers', 'buyunder', 'recommendedbuy', 'gav', 'gav2',
+                         'persofinvestment', 'maxpersofinvestment', 'paidvalue', 'totalvalue', 'debt', 'difference', 'totalchange', 'selltarget')
         tv.heading("#0", text='Summary', anchor='w')
         tv.column("#0", anchor="w")
         tv.heading('currprice', text='')
         tv.column('currprice', anchor='center', width=150)
+        tv.heading('amount', text='')
+        tv.column('amount', anchor='center', width=120)
         tv.heading('prevclose', text='')
         tv.column('prevclose', anchor='center', width=150)
         tv.heading('daychangepers', text='Day Change Commodity')
@@ -1042,8 +1116,6 @@ class Stocktable(Frame):
         tv.column('buyunder', anchor='center', width=100)
         tv.heading('recommendedbuy', text='')
         tv.column('recommendedbuy', anchor='center', width=120)
-        tv.heading('amount', text='')
-        tv.column('amount', anchor='center', width=120)
         tv.heading('gav', text='')
         tv.column('gav', anchor='center', width=120)
         tv.heading('gav2', text='')
@@ -1056,6 +1128,8 @@ class Stocktable(Frame):
         tv.column('paidvalue', anchor='center', width=100)
         tv.heading('totalvalue', text='Total Value')
         tv.column('totalvalue', anchor='center', width=100)
+        tv.heading('debt', text='Debt')
+        tv.column('debt', anchor='center', width=100)
         tv.heading('difference', text='Difference')
         tv.column('difference', anchor='center', width=100)
         tv.heading('totalchange', text='Total Change %')
@@ -1072,13 +1146,13 @@ class Stocktable(Frame):
             self.treeview.insert('', 'end',
                                  text=stock_name[x], values=(
                                  '%.2f' % stock_current_pricefloat_list[x] + ' ' + stock_currency[x],
+                                 stock_amount_list[x],
                                  '%.2f' % previous_stock_closefloat_list[x] + ' ' + stock_currency[x],
                                  '%.2f' % stock_daily_change_pers_list[x] +
                                  ' %', '%.2f' % buy_price_recommendations_list[x] + ' ' + stock_currency[x],
                                  '%.2f' % low_price_list[x] + ' ' + stock_currency[x],
                                  '%.2f' % high_price_list[x] + ' ' + stock_currency[x],
                                  buy_recommendation_list[x],
-                                 stock_amount_list[x],
                                  '%.2f' % stock_gav_kurs_list[x] + ' ' + stock_currency[x],
                                  '%.2f' % stock_percentage_list[x] +
                                  ' %', '%.2f' % stock_max_pers_of_investments_list[x] + ' %',
@@ -1097,18 +1171,20 @@ class Stocktable(Frame):
         for x in range(0, number_of_kryptos_int):
             self.treeview.insert('', 'end',
                                  text=krypto_name[x], values=(
-                                 '%.2f' % krypto_current_pricefloat_list[x] + ' $', #2 OK
-                                 '%.2f' % krypto_24h_price_list[x] + ' $', #3
-                                 '%.2f' % krypto_daily_change_pers_list[x] + ' %', #3 OK
-                                 '%.f' % krypto24hvolume_list[x] + ' $', #4 OK
-                                 '%.2f' % krypto_amount_list[x] + ' ', #5 OK
-                                 '%.2f' % krypto_gav_kurs_list[x] + ' ' + krypto_currency[x], #6 OK
-                                 '%.2f' % krypto_percentage_list[x] + ' %', #7 NOK
-                                 '%.2f' % krypto_max_pers_of_investments_list[x] + ' %', #10
-                                 '%.f' % krypto_paid_list[x] + ' ' + currency, #11
-                                 '%.f' % kryptovalue_list[x] + ' ' + currency, #12
-                                 '%.f' % krypto_diff_list[x] + ' ' + currency, #13
-                                 '%.2f' % krypto_total_pers_change_list[x] + ' %'
+                                 '%.2f' % krypto_current_pricefloat_list[x] + ' $',  #2 OK
+                                 '%.4f' % krypto_amount_list[x] + ' ',  # 5 OK
+                                 '%.2f' % krypto_24h_price_list[x] + ' $',  #3
+                                 '%.2f' % krypto_daily_change_pers_list[x] + ' %',  #3 OK
+                                 '%.f' % krypto24hvolume_list[x] + ' $',  #4 OK
+                                 '%.2f' % krypto_gav_kurs_list[x] + ' ' + krypto_currency[x],  #6 OK
+                                 '%.2f' % krypto_percentage_list[x] + ' %',  #7 NOK
+                                 '%.2f' % krypto_max_pers_of_investments_list[x] + ' %',  #10
+                                 '%.f' % krypto_paid_list[x] + ' ' + currency,  #11
+                                 '%.f' % kryptovalue_list[x] + ' ' + currency,  #12
+                                 '%.f' % krypto_diff_list[x] + ' ' + currency,  #13
+                                 '%.2f' % krypto_total_pers_change_list[x] + ' %',
+                                 krypto_forum_list[x],
+                                 krypto_forum_old_value_list[x]
                                  ))
 
         ttk.Style().configure("Treeview", background="white",
@@ -1166,52 +1242,60 @@ class Stocktable(Frame):
                                                          ' %', '', '', '', '', '%.2f' % stockspercentage +
                                                          ' %', stock_total_max_pers_of_investments +
                                                          ' %',  '%.f' % total_stocks_paid_value + ' ' + currency,
-                                                         '%.f' % sumofallstocks + ' ' + currency,
+                                                         '%.f' % sumofallstocks + ' ' + currency, '',
                                                          '%.f' % allstocksdifference + ' ' + currency,
                                                          '%.2f' % stocks_total_change + ' %', ''))
         self.treeview.insert('', 'end', text='Kryptos', values=('', '', '', '%.2f' % kryptos_daily_portfolio_development +
                                                          ' %', '', '', '', '', '%.2f' % kryptospercentage +
                                                          ' %', krypto_total_max_pers_of_investments +
                                                          ' %',  '%.f' % total_kryptos_paid_value + ' ' + currency,
-                                                         '%.f' % sumofallkryptos + ' ' + currency,
+                                                         '%.f' % sumofallkryptos + ' ' + currency, '',
                                                          '%.f' % allkryptosdifference + ' ' + currency,
                                                          '%.2f' % kryptos_total_change + ' %', ''))
         self.treeview.insert('', 'end', text='Cash', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashpercentage + ' %', '', '', '%.f' % cashfloat + ' ' + currency, '', ''))
-        self.treeview.insert('', 'end', text='Money in Real Estate 1', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment1percentage + ' %', '', '', '%.f' % cash_in_apartment1 +
-                                                        ' ' + currency, '', ''))
-        self.treeview.insert('', 'end', text='Money in Real Estate 2', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment2percentage + ' %', '', '',
-                        '%.f' % cash_in_apartment2_float + ' ' + currency, '', ''))
-        self.treeview.insert('', 'end', text='Money in Real Estate 3', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment3percentage + ' %', '', '',
-                        '%.f' % cash_in_apartment3_float + ' ' + currency, '', ''))
+        '', '', '', '', '', '', '', '', '%.2f' % cashpercentage + ' %', cash_total_max_pers_of_investments +
+                                                         ' %','', '%.f' % cashfloat + ' ' + currency, '', ''))
+        self.treeview.insert('', 'end', text='Real Estate 1', values=(
+        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment1percentage + ' %', real_estate_1_total_max_pers_of_investments +
+                                                         ' %',real_estate_1_paid_amount + ' ' + currency, '%.f' % float(current_est_value_apartment) +
+                                                        ' ' + currency, '%.f' % debtfloat + ' ' + currency, '%.f' % real_estate_1_difference + ' ' + currency, '%.2f' % real_esteate_1_total_change + ' %'))
+        self.treeview.insert('', 'end', text='Real Estate 2', values=(
+        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment2percentage + ' %', real_estate_2_total_max_pers_of_investments +
+                                                         ' %', real_estate_2_paid_amount + ' ' + currency,
+                        '%.f' % cash_in_apartment2_float + ' ' + currency, '', '%.2f' % real_estate_2_difference + ' ' + currency,'%.2f' % real_esteate_2_total_change + ' %'))
+        self.treeview.insert('', 'end', text='Real Estate 3', values=(
+        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment3percentage + ' %',  real_estate_3_total_max_pers_of_investments +
+                                                         ' %', real_estate_3_paid_amount + ' ' + currency,
+                        '%.f' % cash_in_apartment3_float + ' ' + currency, '', '%.f' % real_estate_3_difference + ' ' + currency, '%.2f' % real_esteate_3_total_change + ' %'))
         self.treeview.insert('', 'end', text='Other investments', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % otherinvestmentspercentage + ' %', '', '',
+        '', '', '', '', '', '', '', '', '%.2f' % otherinvestmentspercentage + ' %', other_investments_total_max_pers_of_investments +
+                                                         ' %', '%.f' % other_investmentsfloat + ' ' + currency,
                         '%.f' % other_investmentsfloat + ' ' + currency, '', ''))
         self.treeview.insert('', 'end', text='Money loaned', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % loangivenspercentage + ' %', '', '',
-                        '%.f' % loan_given_float + ' ' + currency, '', ''))
+        '', '', '', '', '', '', '', '', '%.2f' % loangivenspercentage + ' %',loan_given_total_max_pers_of_investments + ' %','',
+                        '%.f' % loan_given_float + ' ' + currency,'',''))
         self.treeview.insert('', 'end', text='Gold', values=(
-        '%.2f' % goldusd + ' USD/Onz', '%.2f' % goldsek + ' SEK/Onz', '%.2f' % goldusdchangepers + ' %', '', 'GDX: '
-                        + '%.2f' % goldgdxusd + ' $', 'GDX Change: ' + '%.2f' % goldgdxperschange + ' %', 'GDXJ: '
-                        + '%.2f' % goldgdxjusd + ' $', 'GDXJ Change: ' + '%.2f' % goldgdxjperschange
-                        + ' %', '%.2f' % goldpercentage + ' %', '', '', '%.f' % gold + ' ' + currency, '', ''))
-        self.treeview.insert('', 'end', text='Current Oil rate', values=(
-        '%.2f' % oilusd + ' USD/Barrel', '%.2f' % oilsek + ' SEK/Barrel', '%.2f' % oilusdchangepers + ' %', '', '',
-                        '', '', '', 'Total: %.2f' % totalpercentage + ' %', '', '', '%.f' % sumofinvestments  +
-                        ' ' + currency, '', ''))
+        '%.2f' % goldusd + ' USD/Onz', '%.2f' % goldsek + ' SEK/Onz', '%.f' % goldonzfloat, '', '', '', '','', '%.2f' % goldpercentage + ' %', gold_total_max_pers_of_investments + ' %', '', '%.f' % gold + ' ' + currency, '' ))
+                        #+ ' USD/Onz', '%.2f' % goldsek + ' SEK/Onz', '%.2f' % goldusdchangepers + ' %', '', 'GDX: '
+                        #+ '%.2f' % goldgdxusd + ' $', 'GDX Change: ' + '%.2f' % goldgdxperschange + ' %', 'GDXJ: '
+                        #+ '%.2f' % goldgdxjusd + ' $', 'GDXJ Change: ' + '%.2f' % goldgdxjperschange
+                        #+ ' %', '', '%.f' % gold + ' ' + currency, '', ''))
 
+        #self.treeview.insert('', 'end', text='Current Oil rate', values=(
+        #'%.2f' % oilusd + ' USD/Barrel', '%.2f' % oilsek + ' SEK/Barrel', '%.2f' % oilusdchangepers + ' %', '', '',
+                       # '', '', '', 'Total: %.2f' % totalpercentage + ' %', '', '', '%.f' % sumofinvestments  +
+                       # ' ' + currency, '', ''))
 
     def CreateUIPersonalData(self):
         tv = Treeview(self)
-        tv['columns'] = ('currprice', 'prevclose', 'daychangepers', 'buyunder', 'recommendedbuy', 'amount', 'gav',
+        tv['columns'] = ('currprice', 'amount', 'prevclose', 'daychangepers', 'buyunder', 'recommendedbuy', 'gav',
                          'persofinvestment', 'maxpersofinvestment', 'paidvalue', 'totalvalue', 'difference', 'totalchange', 'selltarget')
         tv.heading("#0", text='Personal data', anchor='w')
         tv.column("#0", anchor="w")
         tv.heading('currprice', text='')
         tv.column('currprice', anchor='center', width=100)
+        tv.heading('amount', text='')
+        tv.column('amount', anchor='center', width=100)
         tv.heading('prevclose', text='')
         tv.column('prevclose', anchor='center', width=230)
         tv.heading('daychangepers', text='')
@@ -1220,8 +1304,6 @@ class Stocktable(Frame):
         tv.column('buyunder', anchor='center', width=100)
         tv.heading('recommendedbuy', text='')
         tv.column('recommendedbuy', anchor='center', width=100)
-        tv.heading('amount', text='')
-        tv.column('amount', anchor='center', width=100)
         tv.heading('gav', text='')
         tv.column('gav', anchor='center', width=100)
         tv.heading('persofinvestment', text='')
@@ -1244,6 +1326,9 @@ class Stocktable(Frame):
         self.grid_columnconfigure(0, weight = 1)
 
     def PersonalData(self):
+        self.treeview.insert('', 'end', text='Euro/Swedish exchange rate', values=(
+            '1 EUR = ' + '%f' % eursekratefloat + ' ' + 'SEK', '1 SEK = ' + '%f' % sekeurratefloat + ' ' + 'EUR', '',
+            '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Canadian/Swedish exchange rate', values=(
             '1 CAD = ' + '%f' % cadsekratefloat + ' ' + 'SEK', '1 SEK = ' + '%f' % sekcadratefloat + ' ' + 'CAD', '',
             '', '', '', '', '', '', '', '', '', ''))
@@ -1260,36 +1345,23 @@ class Stocktable(Frame):
             '1 CAD = ' + '%f' % cadeurratefloat + ' €', '1 € = ' + '%f' % eurcadratefloat + ' ' + 'CAD', '', '', '', '',
             '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Minimum buy', values=(
-        '%.f' % minimumbuyfloat + ' ' + currency, 'Loan', debt + ' ' + currency, 'Monthly salary', '%.f' % monthly_salary  + ' ' + currency, '', '', '', '', '', '', '', ''))
+        '%.f' % minimumbuyfloat + ' ' + currency, 'Monthly salary', '%.f' % monthly_salary  + ' ' + currency, '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Cash in Account 1', values=(
         '%.f' % cash_account1_float + ' ' + currency, 'Debt Interest rate', debt_interest_rate + ' %', 'Annual salary', '%.f' % annual_salary  + ' ' + currency, '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Cash in Account 2', values=(
         '%.f' % cash_account2_float + ' ' + currency, 'Required % banks require paid for apart', pers_bank_require_downpayment_for_loan + ' %', '', '', '', '', '', '', '', '', '', ''))
-        self.treeview.insert('', 'end', text='Loan given', values=(
-        '%.f' % loan_given_float + ' ' + currency, 'Debt Interest rate', debt_interest_rate + ' %', '', '', '', '', '', '', '', '', '', '', ''))
-        self.treeview.insert('', 'end', text='Real Estate 3', values=(
-        '%.f' % cash_in_apartment3_float + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', ''))
-        self.treeview.insert('', 'end', text='All available Cash', values=(
-        '%.f' % cashfloat + ' ' + currency, 'Max amount of cash you can get, apartment', '%.f' % max_loan_cash + ' ' + currency, '', '', '', '', '', '', '', '', '', ''))
-        self.treeview.insert('', 'end', text='Gold', values=(
-        '%.f' % gold + ' ' + currency, 'How much more loan possible', '%.f' % how_much_more_loan_possible + ' ' + currency, '', '', '', '', '', '', '', '', 'Last Updated', ''))
-        self.treeview.insert('', 'end', text='Other Investments', values=(
-        '%.f' % other_investmentsfloat + ' ' + currency, 'Estimated apartment value', current_est_value_apartment + ' ' + currency, '', '', '', '', '', '', '', '', time.ctime(), ''))
-        self.treeview.insert('', 'end', text='Sum of all investments', values=(
-        '%.f' % sumofinvestments + ' ' + currency, 'Cash in apartment', '%.f' % cash_in_apartment1 + ' ' + currency, '', '', '', '', '', '', '', '', '', ''))
-        self.treeview.insert('', 'end', text='Sum of all investments', values=(
-        '%.f' % sumofinvestments + ' ' + currency, 'Cash in apartment 2', '%.f' % cash_in_apartment2_float + ' ' + currency,
-        '', '', '', '', '', '', '', '', '', ''))
+        self.treeview.insert('', 'end', text='Max amount of cash you can get, apartment', values=(
+        '%.f' % max_loan_cash + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Net worth', values=(
         '%.f' % net_worth  + ' ' + currency, 'Monthly loan payment', '%.f' % monthly_loan_payments + ' ' + currency, 'Financial Goal', '%.f' % dollar_goal + ' $', '%.f' % sek_goal +
-         ' ' + currency, 'Missing from financial goal', '%.f' % missing_from_goal + ' ' + currency , '', '', '', '', ''))
+         ' ' + currency, 'Missing from financial goal', '%.f' % missing_from_goal + ' ' + currency , 'Net worth + Loans',  '%.f' % sumofinvestments + ' ' + currency, 'Last Updated', time.ctime(), '', '', '' ))
 
 
 def piechart():
-    labels = 'Gold', 'Cash', 'Stocks', 'Other Investments', 'Cash in apartment 2'
-    sizes = [gold, cashfloat, sumofallstocks, other_investmentsfloat, cash_in_apartment2_float]
-    colors = ['gold', 'yellowgreen', 'lightcoral', 'lightskyblue', 'orange']
-    explode = (0, 0, 0.1, 0, 0)  # explode Stocks
+    labels = 'Gold', 'Cash', 'Stocks', 'Other Investments', 'Cash in Real Estate 2', 'Cash in Real Estate 3'
+    sizes = [gold, cashfloat, sumofallstocks, other_investmentsfloat, cash_in_apartment2_float, cash_in_apartment3_float]
+    colors = ['gold', 'yellowgreen', 'lightcoral', 'lightskyblue', 'orange', 'blue']
+    explode = (0, 0, 0.1, 0, 0, 0)  # explode Stocks
 
     # Plot
     plt.pie(sizes, explode=explode, labels=labels, colors=colors,
@@ -1299,15 +1371,15 @@ def piechart():
     plt.show()
 
 def piechart_inc_apartment():
-    labels = 'Gold', 'Cash', 'Stocks', 'Other Investments', 'Cash in Apartment', 'Cash in apartment 2'
-    sizes = [gold, cashfloat, sumofallstocks, other_investmentsfloat, cash_in_apartment1, cash_in_apartment2_float]
-    colors = ['gold', 'yellowgreen', 'lightcoral', 'lightskyblue', 'brown', 'orange']
-    explode = (0, 0, 0, 0, 0.1, 0)  # explode Stocks
+    labels = 'Gold', 'Cash', 'Stocks', 'Other Investments', 'Cash in Real Estate 1', 'Cash in Real Estate 2', 'Cash in Real Estate 3'
+    sizes = [gold, cashfloat, sumofallstocks, other_investmentsfloat, cash_in_apartment1, cash_in_apartment2_float, cash_in_apartment3_float]
+    colors = ['gold', 'yellowgreen', 'lightcoral', 'lightskyblue', 'brown', 'orange', 'blue']
+    explode = (0, 0, 0, 0, 0.1, 0, 0)  # explode Stocks
 
     # Plot
     plt.pie(sizes, explode=explode, labels=labels, colors=colors,
     autopct='%3.2f%%', shadow=True, startangle=90)
-    plt.title("Investments, including cash in apartment")
+    plt.title("Investments, including cash in Real Estate 1")
     plt.axis('equal')
     plt.show()
 
@@ -1512,7 +1584,7 @@ class Menues(Frame):
     def GraphMenu(self):
         graphmenu = Menu(self, tearoff=0)
         graphmenu.add_command(label="Investments Chart - Pie Diagram", command=piechart)
-        graphmenu.add_command(label="Investments Chart + cash in apartment - Pie Diagram",
+        graphmenu.add_command(label="Investments Chart + cash in Real Estates - Pie Diagram",
                               command=piechart_inc_apartment)
         self.add_cascade(label="Graphs", menu=graphmenu)
 '''
@@ -1542,7 +1614,7 @@ def main():
 
     graphmenu = Menu(menubar, tearoff=0)
     graphmenu.add_command(label="Investments Chart - Pie Diagram", command=piechart)
-    graphmenu.add_command(label="Investments Chart + cash in apartment - Pie Diagram", command=piechart_inc_apartment)
+    graphmenu.add_command(label="Investments Chart + cash in Real Estates - Pie Diagram", command=piechart_inc_apartment)
     menubar.add_cascade(label="Graphs", menu=graphmenu)
     root.config(menu=menubar)
 

@@ -402,12 +402,32 @@ def returnkryptoforumreaders(kryptoforumreaderswebpage):
 ########################
 #Stock prices
 ########################
-#Stock current price
+#Stock current price, Bloomberg, stopped working
+#def stockcurrentpricebloomberg(bloombergwebpage):
+    #page = requests.get(bloombergwebpage)
+    #tree = html.fromstring(page.content)
+      #price = tree.xpath('//*[@id="content"]/div/div/div[1]/div/div[4]/div[2]/text()')
+      #price = tree.xpath('//*[@id="root"]/div/div/section[2]/div[1]/div/section[1]/section[1]/section[2]/section/div[1]/span[1]/text()')
+      #price = tree.xpath('//*[@id="root"]/div/div/section[2]/div[1]/div/section/section[1]/section[2]/section/div[1]/span[1]/text()')
+      #price = tree.xpath('//*[@id="root"]/div/div/section[2]/div[1]/div/section[1]/section/section[2]/section/div/span[1]/text()')
+    #price = tree.xpath('//*[@id="root"]/div[1]/div[1]/section[2]/div[1]/div[1]/section[1]/section[1]/section[2]/section[1]/div[1]/span[1]/text()')
+      #price = tree.xpath('//*[@id="root"]/div/div/section[2]/div[1]/div/section[1]/section/section[2]/section/div[1]/span[1]/text()')
+    #print("price: ", price)
+    #pricestr = ''.join(price)
+    #print("pricestr: ", pricestr)
+    #stockcurrentpricebloombergfloat = float(pricestr)
+    #print("stockcurrentpricebloombergfloat: ", stockcurrentpricebloombergfloat)
+    #return stockcurrentpricebloombergfloat
+
+
+#Stock current price Wall Street Journal
 def stockcurrentpricebloomberg(bloombergwebpage):
     page = requests.get(bloombergwebpage)
     tree = html.fromstring(page.content)
-    #price = tree.xpath('//*[@id="content"]/div/div/div[1]/div/div[4]/div[2]/text()')
-    price = tree.xpath('//*[@id="root"]/div/div/section[2]/div[1]/div/section[1]/section[1]/section[2]/section/div[1]/span[1]/text()')
+
+
+    price = tree.xpath('//*[@id="quote_val"]/text()')
+    #price = tree.xpath('//div[contains(@id,"data-reactid")]//p//text()')
     print("price: ", price)
     pricestr = ''.join(price)
     print("pricestr: ", pricestr)
@@ -415,7 +435,7 @@ def stockcurrentpricebloomberg(bloombergwebpage):
     print("stockcurrentpricebloombergfloat: ", stockcurrentpricebloombergfloat)
     return stockcurrentpricebloombergfloat
 
-stock_current_pricefloat_list = []  
+stock_current_pricefloat_list = []
 for x in range(0, number_of_stocks_int):
     stock_current_pricefloat_list = stock_current_pricefloat_list + [(stockcurrentpricebloomberg(stock_web_page[x]))]
 
@@ -432,7 +452,6 @@ def kryptocurrentprice(kryptowebpage):
     print("Pricestr: ", pricestr)
     if pricestr == '?':
         pricefloat = 0
-        
         return pricefloat
     else:
         pricefloat = float(pricestr.replace('$', ' '))
@@ -446,14 +465,23 @@ for x in range(0, number_of_kryptos_int):
     #stock_current_pricefloat_list = stock_current_pricefloat_list + [(stockcurrentpricebloomberg(stock_web_page[x]))]
 
 #Stock previous close price Bloomberg
+#def previousstockclose(bloombergwebpage):
+    #page = requests.get(bloombergwebpage)
+    #tree = html.fromstring(page.content)
+    #change = tree.xpath('//*[@id="root"]/div/div/section[2]/div[1]/div/section[1]/div/section/section[2]/div/text()')
+    #changestr = ''.join(change)
+    #previousstockclosefloat = float(changestr)
+    #return previousstockclosefloat
+
+#Stock previous close price Wall Street Journal
 def previousstockclose(bloombergwebpage):
     page = requests.get(bloombergwebpage)
     tree = html.fromstring(page.content)
-    #change = tree.xpath('//*[@id="content"]/div/div/div[8]/div/div/div[4]/div[2]/text()')
-    change = tree.xpath('//*[@id="root"]/div/div/section[2]/div[1]/div/section[1]/div/section/section[2]/div/text()')
+    change = tree.xpath('//*[@id="compare_divId"]/div[3]/ul[1]/li[2]/span[2]/text()')
     changestr = ''.join(change)
     previousstockclosefloat = float(changestr)
     return previousstockclosefloat
+
 
 previous_stock_closefloat_list = []
 for x in range(0, number_of_stocks_int):
@@ -730,8 +758,8 @@ for x in range(0, number_of_kryptos_int):
 sumofallstocks = sum(sumofallstocks_list)
 sumofallkryptos = sum(sumofallkryptos_list)
 
-#Total sum of current value of all apartments
-sumofallrealestate = cash_in_apartment1 + cash_in_apartment2_float + cash_in_apartment3_float
+#Total sum of current value of all Real Estates
+sumofallrealestate = float(current_est_value_apartment) + cash_in_apartment2_float + cash_in_apartment3_float
 
 #Total sum of all investments
 sumofinvestments = cashfloat + sumofallstocks + sumofallkryptos + sumofallrealestate + gold + other_investmentsfloat + loan_given_float
@@ -1275,7 +1303,7 @@ class Stocktable(Frame):
         '', '', '', '', '', '', '', '', '%.2f' % loangivenspercentage + ' %',loan_given_total_max_pers_of_investments + ' %','',
                         '%.f' % loan_given_float + ' ' + currency,'',''))
         self.treeview.insert('', 'end', text='Gold', values=(
-        '%.2f' % goldusd + ' USD/Onz', '%.2f' % goldsek + ' SEK/Onz', '%.f' % goldonzfloat, '', '', '', '','', '%.2f' % goldpercentage + ' %', gold_total_max_pers_of_investments + ' %', '', '%.f' % gold + ' ' + currency, '' ))
+        '%.2f' % goldusd + ' USD/Onz', '%.2f' % goldsek + ' SEK/Onz', '%.f' % goldonzfloat  + ' Onz', '', '', '', '','', '%.2f' % goldpercentage + ' %', gold_total_max_pers_of_investments + ' %', '', '%.f' % gold + ' ' + currency, '' ))
                         #+ ' USD/Onz', '%.2f' % goldsek + ' SEK/Onz', '%.2f' % goldusdchangepers + ' %', '', 'GDX: '
                         #+ '%.2f' % goldgdxusd + ' $', 'GDX Change: ' + '%.2f' % goldgdxperschange + ' %', 'GDXJ: '
                         #+ '%.2f' % goldgdxjusd + ' $', 'GDXJ Change: ' + '%.2f' % goldgdxjperschange
@@ -1354,7 +1382,7 @@ class Stocktable(Frame):
         '%.f' % max_loan_cash + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Net worth', values=(
         '%.f' % net_worth  + ' ' + currency, 'Monthly loan payment', '%.f' % monthly_loan_payments + ' ' + currency, 'Financial Goal', '%.f' % dollar_goal + ' $', '%.f' % sek_goal +
-         ' ' + currency, 'Missing from financial goal', '%.f' % missing_from_goal + ' ' + currency , 'Net worth + Loans',  '%.f' % sumofinvestments + ' ' + currency, 'Last Updated', time.ctime(), '', '', '' ))
+         ' ' + currency, 'Missing from financial goal', '%.f' % missing_from_goal + ' ' + currency , 'Net worth + Debt',  '%.f' % sumofinvestments + ' ' + currency, 'Last Updated', time.ctime(), '', '', '' ))
 
 
 def piechart():

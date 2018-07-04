@@ -367,11 +367,12 @@ def returngoldusdgdxjperschange():
 def returnkryptoforumreaders(kryptoforumreaderswebpage):
     #kryptoforumreaderspage = requests.get('https://www.reddit.com/r/Metaverse_Blockchain/')
     print('kryptoforumreaderswebpage1: ', kryptoforumreaderswebpage)
-    if kryptoforumreaderswebpage == '0':
+    if kryptoforumreaderswebpage == 0:
         print('kryptoforumreaderswebpage1 if 1: ', kryptoforumreaderswebpage)
         #kryptoforumreadersfloat = ''
         kryptoforumreadersstr = ''
-    elif kryptoforumreaderswebpage != '0':
+    #elif kryptoforumreaderswebpage != '0':
+    else:
         kryptoforumreaderspage = requests.get(kryptoforumreaderswebpage)
         print('kryptoforumreaderswebpage2 if 2: ', kryptoforumreaderswebpage)
         kryptoforumreaderstree = html.fromstring(kryptoforumreaderspage.content)
@@ -419,25 +420,22 @@ def returnkryptoforumreaders(kryptoforumreaderswebpage):
     #print("stockcurrentpricebloombergfloat: ", stockcurrentpricebloombergfloat)
     #return stockcurrentpricebloombergfloat
 
-
 #Stock current price Wall Street Journal
-def stockcurrentpricebloomberg(bloombergwebpage):
-    page = requests.get(bloombergwebpage)
+def stockcurrentprice(webpage):
+    page = requests.get(webpage)
     tree = html.fromstring(page.content)
-
-
     price = tree.xpath('//*[@id="quote_val"]/text()')
     #price = tree.xpath('//div[contains(@id,"data-reactid")]//p//text()')
     print("price: ", price)
     pricestr = ''.join(price)
     print("pricestr: ", pricestr)
-    stockcurrentpricebloombergfloat = float(pricestr)
-    print("stockcurrentpricebloombergfloat: ", stockcurrentpricebloombergfloat)
-    return stockcurrentpricebloombergfloat
+    stockcurrentpricefloat = float(pricestr)
+    print("stockcurrentpricefloat: ", stockcurrentpricefloat)
+    return stockcurrentpricefloat
 
 stock_current_pricefloat_list = []
 for x in range(0, number_of_stocks_int):
-    stock_current_pricefloat_list = stock_current_pricefloat_list + [(stockcurrentpricebloomberg(stock_web_page[x]))]
+    stock_current_pricefloat_list = stock_current_pricefloat_list + [(stockcurrentprice(stock_web_page[x]))]
 
 #Krypto current price
 def kryptocurrentprice(kryptowebpage):
@@ -474,8 +472,8 @@ for x in range(0, number_of_kryptos_int):
     #return previousstockclosefloat
 
 #Stock previous close price Wall Street Journal
-def previousstockclose(bloombergwebpage):
-    page = requests.get(bloombergwebpage)
+def previousstockclose(webpage):
+    page = requests.get(webpage)
     tree = html.fromstring(page.content)
     change = tree.xpath('//*[@id="compare_divId"]/div[3]/ul[1]/li[2]/span[2]/text()')
     changestr = ''.join(change)
@@ -516,12 +514,14 @@ for x in range(0, number_of_stocks_int):
 
 #Krypto 24h Volume
 def krypto24hvolume(kryptowebpage):
+    print("rypto24hvolume")
     print("kryptowebpage: ", kryptowebpage)
     page = requests.get(kryptowebpage)
     print("page: ", page)
     tree = html.fromstring(page.content)
     print("tree: ", tree)
-    krypto24hvolume = tree.xpath('normalize-space(/html/body/div[3]/div/div[1]/div[4]/div[1]/div[2]/div[2]/text())')
+    #krypto24hvolume = tree.xpath('normalize-space(/html/body/div[3]/div/div[1]/div[4]/div[1]/div[2]/div[2]/text())')
+    krypto24hvolume = tree.xpath('normalize-space(/html/body/div[2]/div/div[1]/div[4]/div[2]/div[2]/div/span[1]/span[1]/text())')
     print("krypto24hvolume: ", krypto24hvolume)
     krypto24hvolumestr = ''.join(krypto24hvolume)
     print("Pkrypto24hvolumestr: ", krypto24hvolumestr)
@@ -536,12 +536,14 @@ def krypto24hvolume(kryptowebpage):
     return krypto24hvolumefloat
 
 def krypto24hchangepers(kryptowebpage):
+    print("krypto24changepers")
     print("kryptowebpage: ", kryptowebpage)
     page = requests.get(kryptowebpage)
     print("page: ", page)
     tree = html.fromstring(page.content)
     print("tree: ", tree)
-    price = tree.xpath('/html/body/div[3]/div/div[1]/div[3]/div[2]/span[2]/text()')
+    #price = tree.xpath('/html/body/div[3]/div/div[1]/div[3]/div[2]/span[2]/text()')
+    price = tree.xpath('/html/body/div[2]/div/div[1]/div[4]/div[1]/div[1]/span[2]/span/text()')
     print("Price: ", price)
     pricestr = ''.join(price)
     print("Pricestr: ", pricestr)
@@ -918,12 +920,12 @@ print('-------------------------------------------------------------------------
 print("Time updated: ", time.ctime())
 print('--------------------------------------------------------------------------------')
 
-print('krypto_forum_list[0]: ', krypto_forum_list[0])
-print('krypto_forum_list[1]: ', krypto_forum_list[1])
-print('krypto_forum_list[2]: ', krypto_forum_list[2])
-print('krypto_forum_list[3]: ', krypto_forum_list[3])
-print('krypto_forum_list[4]: ', krypto_forum_list[4])
-print('krypto_forum_list[5]: ', krypto_forum_list[5])
+#print('krypto_forum_list[0]: ', krypto_forum_list[0])
+#print('krypto_forum_list[1]: ', krypto_forum_list[1])
+#print('krypto_forum_list[2]: ', krypto_forum_list[2])
+#print('krypto_forum_list[3]: ', krypto_forum_list[3])
+#print('krypto_forum_list[4]: ', krypto_forum_list[4])
+#print('krypto_forum_list[5]: ', krypto_forum_list[5])
 
 
 def new_rand_df():
@@ -1048,7 +1050,7 @@ class Stocktable(Frame):
     def CreateUIStock(self):
         tv = Treeview(self)
         tv['columns'] = ('currprice', 'amount', 'prevclose', 'daychangepers', 'buyunder', 'lowprice', 'highprice', 'recommendedbuy', 'gav', 'persofinvestment',
-                         'maxpersofinvestment', 'paidvalue', 'totalvalue', 'debt', 'difference', 'totalchange', 'selltarget')
+                         'maxpersofinvestment', 'paidvalue', 'totalvalue', 'difference', 'totalchange', 'selltarget')
         tv.heading("#0", text='Stock', anchor='w')
         tv.column("#0", anchor="w")
         tv.heading('currprice', text='Current Price')
@@ -1077,8 +1079,6 @@ class Stocktable(Frame):
         tv.column('paidvalue', anchor='center', width=80)
         tv.heading('totalvalue', text='Total Value')
         tv.column('totalvalue', anchor='center', width=80)
-        tv.heading('debt', text='Debt')
-        tv.column('debt', anchor='center', width=80)
         tv.heading('difference', text='Difference')
         tv.column('difference', anchor='center', width=80)
         tv.heading('totalchange', text='Total Change %')

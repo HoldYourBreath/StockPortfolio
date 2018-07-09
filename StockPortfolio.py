@@ -11,8 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import *
 import datetime
-
-
+import json
 import numpy as np
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
@@ -1620,6 +1619,11 @@ class Menues(Frame):
 
 
 def main():
+
+    #json
+    data = 1
+    with open('data\data.json', 'w') as outfile:
+        json.dump(data, outfile)
 
     #Creates StockPortfolio main window
     root = Tk()

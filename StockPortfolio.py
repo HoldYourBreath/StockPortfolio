@@ -22,6 +22,12 @@ from tkinter import ttk
 from tkinter.ttk import *
 import pandas as pd
 from random import randrange
+# Make it work for Python 2+3 and with Unicode
+import io
+try:
+    to_unicode = unicode
+except NameError:
+    to_unicode = str
 
 ########################
 #Read data from stocks.csv and personal_data.csv
@@ -911,6 +917,37 @@ def highlight_max(data, color='yellow'):
         return pd.DataFrame(np.where(is_max, attr, ''),
                             index=data.index, columns=data.columns)
 
+
+#json
+#Define data
+calculated_data = {
+   'Calculated Data': {'Euro/Swedish exchange rate': stocks_total_change,
+                       'Canadian/Swedish exchange rate': 'value',
+                       'USD/SEK exchange rate': 'value',
+                       'Philippine Peso/SEK exchange rate': 'value',
+                       'USD/Euro exchange rate': 'value',
+                       'Canadian/Euro exchange rate': 42}}
+# Write JSON file
+with io.open('data\calculated_data.json', 'w', encoding='utf8') as outfile:
+        str_ = json.dumps(calculated_data,
+                          indent=4, sort_keys=True,
+                          separators=(',', ': '), ensure_ascii=False)
+        outfile.write(to_unicode(str_))
+
+
+stock_data = {
+   'Stock Data': {'foo': stocks_total_change,
+                  'key': 'value',
+                  'the answer': 42}}
+#with open('data\data.json', 'w') as outfile:
+#    json.dump(data, outfile)
+# Write JSON file
+with io.open('data\stocks.json', 'w', encoding='utf8') as outfile:
+        str_ = json.dumps(stock_data,
+                          indent=4, sort_keys=True,
+                          separators=(',', ': '), ensure_ascii=False)
+        outfile.write(to_unicode(str_))
+
 print('--------------------------------------------------------------------------------')
 print('************ Welcome to Stock Portfolio,', name, '************')
 print('--------------------------------------------------------------------------------')
@@ -1621,9 +1658,20 @@ class Menues(Frame):
 def main():
 
     #json
-    data = 1
-    with open('data\data.json', 'w') as outfile:
-        json.dump(data, outfile)
+    # Define data
+    data = {'a list': [1, 42, 3.141, 1337, 'help', u'€'],
+            'a string': 'bla',
+            'another dict': {'foo': 'bar',
+                             'key': 'value',
+                             'the answer': 42}}
+    #with open('data\data.json', 'w') as outfile:
+    #    json.dump(data, outfile)
+    # Write JSON file
+    with io.open('data\data.json', 'w', encoding='utf8') as outfile:
+        str_ = json.dumps(data,
+                          indent=4, sort_keys=True,
+                          separators=(',', ': '), ensure_ascii=False)
+        outfile.write(to_unicode(str_))
 
     #Creates StockPortfolio main window
     root = Tk()

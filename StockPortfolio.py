@@ -22,85 +22,33 @@ from tkinter import ttk
 from tkinter.ttk import *
 import pandas as pd
 from random import randrange
-# Make it work for Python 2+3 and with Unicode
 import io
-try:
-    to_unicode = unicode
-except NameError:
-    to_unicode = str
+to_unicode = str
+import pprint
 
-########################
-#Read data from stocks.csv and personal_data.csv
-########################
+pprint.pprint(sys.path)
 
-print('Reading data from files...')
-script_dir = os.path.dirname(os.path.realpath('__file__'))
-print(script_dir)
-target_file = os.path.join(script_dir, '..')
-print(target_file)
-os.chdir(target_file)
-retval = os.getcwd()
-print(retval)
-target_file = os.path.join(retval, 'data\stocks.csv')
-target_file2 = os.path.join(retval, 'data\personal_data.csv')
-target_file3 = os.path.join(retval, 'data\kryptos.csv')
-print(target_file)
-print(target_file2)
-print(target_file3)
-os.chdir(retval)
-if os.path.isfile(target_file) and os.access(target_file, os.R_OK):
-    print('File stocks.csv exists and is readable')
-    print('File personal_data.csv exists and is readable')
-    print('File kryptos.csv exists and is readable')
-else:
-    print('Either file stocks.csv is missing or is not readable')
-    print('Either file personal_data.csv is missing or is not readable')
-    print('Either file kryptos.csv is missing or is not readable')
-    sys.exit()
-stocksfile = pd.read_csv(target_file)
-personal_data_file = pd.read_csv(target_file2)
-kryptosfile = pd.read_csv(target_file3)
+script_dir = os.path.dirname(__file__)
+personal_data_path = "stockportfolio\src\data\personal_data.json"
+personal_data_abs_file_path = os.path.join(script_dir, personal_data_path)
 
-#stocks.csv
-stock_name = stocksfile.Stock
-buy_price_recommendations = stocksfile.BuyUnder
-low_price = stocksfile.LowPrice
-high_price = stocksfile.HighPrice
-sales_target = stocksfile.SalesTarget
-stock_max_pers_of_investments = stocksfile.MaxPersOfInvestments
-stock_amount = stocksfile.Amount
-stock_gav_kurs = stocksfile.GavKurs
-stock_currency = stocksfile.Currency
-stock_web_page = stocksfile.StockWebPage
+with open(personal_data_abs_file_path, "r") as read_file:
+    personal_data = json.load(read_file)
 
-#kryptos.csv
-krypto_name = kryptosfile.Krypto
-#krypto_buy_price_recommendations = kryptosfile.BuyUnder
-#krypto_low_price = kryptosfile.LowPrice
-#krypto_high_price = kryptosfile.HighPrice
-#krypto_sales_target = kryptosfile.SalesTarget
-krypto_amount = kryptosfile.KryptoAmount
-krypto_max_pers_of_investments = kryptosfile.KryptoMaxAllowedPersofInv
-krypto_gav_kurs = kryptosfile.KryptoAveragePaid
-krypto_currency = kryptosfile.Currency
-krypto_web_page = kryptosfile.KryptoWebPage
-krypto_forum_web_page = kryptosfile.KryptoForumWebPage
-krypto_forum_old_value = kryptosfile.KryptoForumOldValue
-
-#personal_data.csv
-name = personal_data_file.AttributeValue[0]
-debt = personal_data_file.AttributeValue[1]
-debt_interest_rate = personal_data_file.AttributeValue[2]
-cash_account1 = personal_data_file.AttributeValue[3]
-cash_account2 = personal_data_file.AttributeValue[4]
-loan_given = personal_data_file.AttributeValue[5]
-cash_in_apartment3 = personal_data_file.AttributeValue[6]
-other_investments = personal_data_file.AttributeValue[7]
-goldonz = personal_data_file.AttributeValue[8]
-minimumbuy = personal_data_file.AttributeValue[9]
-currency = personal_data_file.AttributeValue[10]
-stock_total_max_pers_of_investments = personal_data_file.AttributeValue[11]
-number_of_stocks = personal_data_file.AttributeValue[12]
+#personal_data
+name = personal_data['name']
+debt = personal_data['debt']
+debt_interest_rate = personal_data['debt_interest_rate']
+cash_account1 = personal_data['cash_account1']
+cash_account2 = personal_data['cash_account2']
+loan_given = personal_data['loan_given']
+cash_in_apartment3 = personal_data['cash_in_apartment3']
+other_investments = personal_data['other_investments']
+goldonz = personal_data['goldonz']
+minimumbuy = personal_data['minimumbuy']
+currency =personal_data['currency']
+stock_total_max_pers_of_investments=personal_data['stock_max_pers_of_investments']
+number_of_stocks=personal_data['number_of_stocks']
 debtfloat = float(debt)
 debt_interest_ratefloat = float(debt_interest_rate)
 goldonzfloat = float(goldonz)
@@ -111,139 +59,142 @@ loan_given_float = float(loan_given)
 
 minimumbuyfloat = float(minimumbuy)
 other_investmentsfloat = float(other_investments)
-#stock_max_pers_of_investments_float = float(stock_max_pers_of_investments)
 
 number_of_stocks_int = int(number_of_stocks)
 
-pers_bank_require_downpayment_for_loan = personal_data_file.AttributeValue[13]
-current_est_value_apartment = personal_data_file.AttributeValue[14]
-monthly_loan_payments = float(personal_data_file.AttributeValue[15])
-cash_in_apartment2_float = float(personal_data_file.AttributeValue[16])
-monthly_salary = float(personal_data_file.AttributeValue[17])
-annual_salary = float(personal_data_file.AttributeValue[18])
-dollar_goal = float(personal_data_file.AttributeValue[19])
-number_of_kryptos = personal_data_file.AttributeValue[20]
-krypto_total_max_pers_of_investments = personal_data_file.AttributeValue[21]
-cash_total_max_pers_of_investments = personal_data_file.AttributeValue[22]
-real_estate_1_total_max_pers_of_investments = personal_data_file.AttributeValue[23]
-real_estate_2_total_max_pers_of_investments = personal_data_file.AttributeValue[24]
-real_estate_3_total_max_pers_of_investments = personal_data_file.AttributeValue[25]
-other_investments_total_max_pers_of_investments = personal_data_file.AttributeValue[26]
-loan_given_total_max_pers_of_investments = personal_data_file.AttributeValue[27]
-gold_total_max_pers_of_investments = personal_data_file.AttributeValue[28]
-real_estate_1_paid_amount = personal_data_file.AttributeValue[29]
-real_estate_2_paid_amount = personal_data_file.AttributeValue[30]
-real_estate_3_paid_amount = personal_data_file.AttributeValue[31]
-
+pers_bank_require_downpayment_for_loan = personal_data['pers_bank_require_downpayment_for_loan']
+current_est_value_apartment = personal_data['current_est_value_apartment']
+monthly_loan_payments = personal_data['monthly_loan_payments']
+cash_in_apartment2_float = personal_data['cash_in_apartment2']
+monthly_salary = personal_data['monthly_salary']
+annual_salary = personal_data['annual_salary']
+dollar_goal = personal_data['dollar_goal']
+number_of_kryptos = personal_data['number_of_kryptos']
+krypto_total_max_pers_of_investments = personal_data['krypto_total_max_pers_of_investments']
+cash_total_max_pers_of_investments = personal_data['cash_total_max_pers_of_investments']
+real_estate_1_total_max_pers_of_investments = personal_data['real_estate_total_1_max_pers_of_investments']
+real_estate_2_total_max_pers_of_investments = personal_data['real_estate_total_2_max_pers_of_investments']
+real_estate_3_total_max_pers_of_investments = personal_data['real_estate_total_3_max_pers_of_investments']
+other_investments_total_max_pers_of_investments = personal_data['other_investments_total_max_pers_of_investments']
+loan_given_total_max_pers_of_investments = personal_data['loan_given_total_max_pers_of_investments']
+gold_total_max_pers_of_investments = personal_data['gold_total_max_pers_of_investments']
+real_estate_1_paid_amount = personal_data['real_estate_1_paid_amount']
+real_estate_2_paid_amount = personal_data['real_estate_2_paid_amount']
+real_estate_3_paid_amount = personal_data['real_estate_3_paid_amount']
 real_estate_1_paid_amount_float = float(real_estate_1_paid_amount)
 real_estate_2_paid_amount_float = float(real_estate_2_paid_amount)
 real_estate_3_paid_amount_float = float(real_estate_3_paid_amount)
 
-
-#print(krypto_max_pers_of_investments)
 number_of_kryptos_int = int(number_of_kryptos)
-#print(number_of_kryptos_int)
-#krypto_max_pers_of_investments_float = float(krypto_max_pers_of_investments)
 
-#Stock name
-name_list = []
-for x in range(0, number_of_stocks_int):
-    name_list = name_list + [stock_name[x]]
+#Kryptos_data.json
 
-#Krypto name
-krypto_name_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_name_list = krypto_name_list + [krypto_name[x]]
+kryptos_data_path = "stockportfolio\src\data\kryptos_data.json"
+kryptos_data_abs_file_path = os.path.join(script_dir, kryptos_data_path)
+with open(kryptos_data_abs_file_path, "r") as read_file:
+  kryptos_data = json.load(read_file)
+  print(kryptos_data)
+  krypto_name_list = []
+  krypto_amount_list = []
+  krypto_gav_kurs_list = []
+  krypto_max_pers_of_investments_list = []
+  krypto_currency_list = []
+  krypto_web_page_list = []
 
-#Buy price recommendations
-buy_price_recommendations_list = []
-for x in range(0, number_of_stocks_int):
-    buy_price_recommendations_list = buy_price_recommendations_list + [buy_price_recommendations[x]]
+  for x in range(0, number_of_kryptos_int):
+    krypto_name = kryptos_data['Kryptos'][x]['Krypto']
+    krypto_amount = kryptos_data['Kryptos'][x]['KryptoAmount']
+    krypto_amount_float = float(krypto_amount)
+    krypto_gav_kurs = kryptos_data['Kryptos'][x]['KryptoAveragePaid']
+    krypto_max_pers_of_investments = kryptos_data['Kryptos'][x]['KryptoMaxAllowedPersofInv']
+    krypto_currency = kryptos_data['Kryptos'][x]['Currency']
+    krypto_web_page = kryptos_data['Kryptos'][x]['KryptoWebPage']
 
-'''
-#Krypto Buy price recommendations
-krypto_buy_price_recommendations_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_buy_price_recommendations_list = krypto_buy_price_recommendations_list + [krypto_buy_price_recommendations[x]]
-'''
-low_price_list = []
-for x in range(0, number_of_stocks_int):
-    low_price_list = low_price_list + [low_price[x]]
+    print("krypto_name: ", krypto_name)
+    krypto_name_list = krypto_name_list + [krypto_name]
+    krypto_amount_list = krypto_amount_list + [krypto_amount_float]
+    krypto_gav_kurs_list = krypto_gav_kurs_list + [krypto_gav_kurs]
+    krypto_max_pers_of_investments_list = krypto_max_pers_of_investments_list + [krypto_max_pers_of_investments]
+    krypto_currency_list = krypto_currency_list + [krypto_currency]
+    krypto_web_page_list = krypto_web_page_list + [krypto_web_page]
 
-'''
-#Krypto low price list
-krypto_low_price_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_low_price_list = krypto_low_price_list + [krypto_low_price[x]]
-'''
+print("krypto_name_list[0] : " , krypto_name_list[0])
+print("krypto_name_list[1] : " , krypto_name_list[1])
+print("krypto_amount_list[0] : " , krypto_amount_list[0])
+print("krypto_amount_list[1] : " , krypto_amount_list[1])
+print("krypto_gav_kurs_list[0] : " , krypto_gav_kurs_list[0])
+print("krypto_gav_kurs_list[1] : " , krypto_gav_kurs_list[1])
+print("krypto_max_pers_of_investments_list[0] : " , krypto_max_pers_of_investments_list[0])
+print("krypto_max_pers_of_investments_list[1] : " , krypto_max_pers_of_investments_list[1])
+print("krypto_currency_list[0] : " , krypto_currency_list[0])
+print("krypto_currency_list[1] : " , krypto_currency_list[1])
+print("krypto_web_page_list[0] : " , krypto_web_page_list[0])
+print("krypto_web_page_list[1] : " , krypto_web_page_list[1])
 
-high_price_list = []
-for x in range(0, number_of_stocks_int):
-    high_price_list = high_price_list + [high_price[x]]
+#stocks_data.json
+stocks_data_path = "stockportfolio\src\data\stocks_data.json"
+stocks_data_abs_file_path = os.path.join(script_dir, stocks_data_path)
+with open(stocks_data_abs_file_path, "r") as read_file:
+  stocks_data = json.load(read_file)
+  print(stocks_data)
+  stock_name_list = []
+  stock_buy_price_recommendations_list = []
+  stock_low_price_list = []
+  stock_high_price_list = []
+  stock_amount_list = []
+  stock_sales_target_list = []
+  stock_max_pers_of_investments_list = []
+  stock_gav_kurs_list = []
+  stock_currency_list = []
+  stock_web_page_list = []
 
-'''
-#Krypto high price list
-krypto_high_price_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_high_price_list = krypto_high_price_list + [krypto_high_price[x]]
-'''
+  for x in range(0, number_of_stocks_int):
+    stock_name=stocks_data['Stocks'][x]['Stock']
+    stock_buy_price_recommendations = stocks_data['Stocks'][x]['BuyUnder']
+    stock_low_price = stocks_data['Stocks'][x]['LowPrice']
+    stock_high_price = stocks_data['Stocks'][x]['HighPrice']
+    stock_amount = stocks_data['Stocks'][x]['Amount']
+    stock_sales_target = stocks_data['Stocks'][x]['SalesTarget']
+    stock_max_pers_of_investments = stocks_data['Stocks'][x]['MaxPersOfInvestments']
+    stock_gav_kurs = stocks_data['Stocks'][x]['GavKurs']
+    stock_currency = stocks_data['Stocks'][x]['Currency']
+    stock_web_page = stocks_data['Stocks'][x]['StockWebPage']
 
-#Sales target
-sales_target_list = []
-for x in range(0, number_of_stocks_int):
-    sales_target_list = sales_target_list + [sales_target[x]]
+    print("stock_name: ",stock_name)
+    print("stock_buy_price_recommendations: ", stock_buy_price_recommendations)
+    print("stock_low_price: ", stock_low_price)
+    print("stock_high_price: ", stock_high_price)
+    print("stock_amount: ", stock_amount)
+    print("stock_sales_target: ", stock_sales_target)
+    print("stock_max_pers_of_investments: ", stock_max_pers_of_investments)
+    print("stock_gav_kurs: ", stock_gav_kurs)
+    print("stock_currency ", stock_currency)
+    print("stock_web_page: ", stock_web_page)
+    stock_name_list = stock_name_list + [stock_name]
+    stock_buy_price_recommendations_list = stock_buy_price_recommendations_list + [stock_buy_price_recommendations]
+    stock_low_price_list = stock_low_price_list + [stock_low_price]
+    stock_high_price_list = stock_high_price_list + [stock_high_price]
+    stock_amount_list = stock_amount_list + [stock_amount]
+    stock_sales_target_list = stock_sales_target_list + [stock_sales_target]
+    stock_max_pers_of_investments_list = stock_max_pers_of_investments_list + [stock_max_pers_of_investments]
+    stock_gav_kurs_list = stock_gav_kurs_list + [stock_gav_kurs]
+    stock_currency_list = stock_currency_list + [stock_currency]
+    stock_web_page_list = stock_web_page_list + [stock_web_page]
 
-'''
-#Sales target krypto
-krypto_sales_target_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_sales_target_list = krypto_sales_target_list + [krypto_sales_target[x]]
-'''
-
-#Amount
-stock_amount_list = []
-for x in range(0, number_of_stocks_int):
-    stock_amount_list = stock_amount_list + [stock_amount[x]]
-
-#Krypto Amount
-krypto_amount_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_amount_list = krypto_amount_list + [krypto_amount[x]]
-
-
-#Max allowed percentage to own of Stock investments
-stock_max_pers_of_investments_list = []
-for x in range(0, number_of_stocks_int):
-    stock_max_pers_of_investments_list = stock_max_pers_of_investments_list + [stock_max_pers_of_investments[x]]
-
-#Max allowed percentage to own of Krypto investments
-krypto_max_pers_of_investments_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_max_pers_of_investments_list = krypto_max_pers_of_investments_list + [krypto_max_pers_of_investments[x]]
-
-
-#Purchase rate GAV from Nordnet
-stock_gav_kurs_list = []
-for x in range(0, number_of_stocks_int):
-    stock_gav_kurs_list = stock_gav_kurs_list + [stock_gav_kurs[x]]
-
-#Purchase rate GAV
-krypto_gav_kurs_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_gav_kurs_list = krypto_gav_kurs_list + [krypto_gav_kurs[x]]
-
-
-#Currency of the stock
-stock_currency_list = []
-for x in range(0, number_of_stocks_int):
-    stock_currency_list = stock_currency_list + [stock_currency[x]]
-
-
-#Currency of the krypto
-krypto_currency_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_currency_list = krypto_currency_list + [krypto_currency[x]]
-
+print("stock_name_list[0] : " ,stock_name_list[0])
+print("stock_name_list[1] : " ,stock_name_list[1])
+print("stock_buy_price_recommendations_list[0] : " ,stock_buy_price_recommendations_list[0])
+print("stock_buy_price_recommendations_list[1] : " ,stock_buy_price_recommendations_list[1])
+print("stock_low_price_list[0] : " ,stock_low_price_list[0])
+print("stock_low_price_list[1] : " ,stock_low_price_list[1])
+print("stock_high_price_list[0] : " ,stock_high_price_list[0])
+print("stock_high_price_list[1] : " ,stock_high_price_list[1])
+print("stock_amount_list[0] : " ,stock_amount_list[0])
+print("stock_amount_list[1] : " ,stock_amount_list[1])
+print("stock_sales_target_list[0] : " ,stock_sales_target_list[0])
+print("stock_sales_target_list[1] : " ,stock_sales_target_list[1])
+print("stock_max_pers_of_investments_list[0] : ",stock_max_pers_of_investments_list[0])
+print("stock_max_pers_of_investments_list[1] : " ,stock_max_pers_of_investments_list[1])
 
 ########################
 #Exchange rates
@@ -440,7 +391,7 @@ def stockcurrentprice(webpage):
 
 stock_current_pricefloat_list = []
 for x in range(0, number_of_stocks_int):
-    stock_current_pricefloat_list = stock_current_pricefloat_list + [(stockcurrentprice(stock_web_page[x]))]
+    stock_current_pricefloat_list = stock_current_pricefloat_list + [(stockcurrentprice(stock_web_page_list[x]))]
 
 #Krypto current price
 def kryptocurrentprice(kryptowebpage):
@@ -464,7 +415,7 @@ def kryptocurrentprice(kryptowebpage):
 #krypto_current_pricefloat_list
 krypto_current_pricefloat_list = []
 for x in range(0, number_of_kryptos_int):
-    krypto_current_pricefloat_list = krypto_current_pricefloat_list + [(kryptocurrentprice(krypto_web_page[x]))]
+    krypto_current_pricefloat_list = krypto_current_pricefloat_list + [(kryptocurrentprice(krypto_web_page_list[x]))]
     #stock_current_pricefloat_list = stock_current_pricefloat_list + [(stockcurrentpricebloomberg(stock_web_page[x]))]
 
 #Stock previous close price Bloomberg
@@ -488,7 +439,7 @@ def previousstockclose(webpage):
 
 previous_stock_closefloat_list = []
 for x in range(0, number_of_stocks_int):
-    previous_stock_closefloat_list = previous_stock_closefloat_list + [(previousstockclose(stock_web_page[x]))]
+    previous_stock_closefloat_list = previous_stock_closefloat_list + [(previousstockclose(stock_web_page_list[x]))]
 
 #Krypto previous close price
 #def previouskryptoclose(kryptowebpage):
@@ -566,19 +517,11 @@ def krypto24hchangepers(kryptowebpage):
 
 krypto_daily_change_pers_list = []
 for x in range(0, number_of_kryptos_int):
-    krypto_daily_change_pers_list = krypto_daily_change_pers_list + [(krypto24hchangepers(krypto_web_page[x]))]
+    krypto_daily_change_pers_list = krypto_daily_change_pers_list + [(krypto24hchangepers(krypto_web_page_list[x]))]
 
 krypto24hvolume_list = []
 for x in range(0, number_of_kryptos_int):
-    krypto24hvolume_list = krypto24hvolume_list + [(krypto24hvolume(krypto_web_page[x]))]
-
-krypto_forum_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_forum_list = krypto_forum_list + [(returnkryptoforumreaders(krypto_forum_web_page[x]))]
-
-krypto_forum_old_value_list = []
-for x in range(0, number_of_kryptos_int):
-    krypto_forum_old_value_list = krypto_forum_old_value_list + [krypto_forum_old_value[x]]
+    krypto24hvolume_list = krypto24hvolume_list + [(krypto24hvolume(krypto_web_page_list[x]))]
 
 #Calculations
 
@@ -639,19 +582,14 @@ def stockvalue(amount, pricefloat, ratefloat):
 def kryptovalue(amount, pricefloat, ratefloat):
     return amount*pricefloat*ratefloat
 
-stock_currency_list = []
-for x in range(0, number_of_stocks_int):
-    stock_currency_list = stock_currency_list + [stock_currency[x]]
 
 stock_exchangerate_from_list = []
 for x in range(0, number_of_stocks_int):
-    stock_exchangerate_from_list = stock_exchangerate_from_list + [stock_currency[x] + currency]
+    stock_exchangerate_from_list = stock_exchangerate_from_list + [stock_currency_list[x] + currency]
 
 krypto_exchangerate_from_list = []
-
-
 for x in range(0, number_of_kryptos_int):
-    krypto_exchangerate_from_list = krypto_exchangerate_from_list + [krypto_currency[x] + currency]
+    krypto_exchangerate_from_list = krypto_exchangerate_from_list + [krypto_currency_list[x] + currency]
 
 stock_exchangerate_list = []
 for x in range(0, number_of_stocks_int):
@@ -660,21 +598,15 @@ for x in range(0, number_of_stocks_int):
 krypto_exchangerate_list = []
 for x in range(0, number_of_kryptos_int):
     krypto_exchangerate_list = krypto_exchangerate_list + [returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=' + krypto_exchangerate_from_list[x] + '&To=' + currency + '')]
-    #krypto_exchangerate_list = krypto_exchangerate_list + [1]
-
-#print(stock_exchangerate_from_list)
-#print(stock_exchangerate_list)
 
 
 stockvalue_list = []
 for x in range(0, number_of_stocks_int):
     stockvalue_list = stockvalue_list + [stockvalue(stock_amount_list[x], stock_current_pricefloat_list[x], stock_exchangerate_list[x])]
 
-
 kryptovalue_list = []
 for x in range(0, number_of_kryptos_int):
     kryptovalue_list = kryptovalue_list + [kryptovalue(krypto_amount_list[x], krypto_current_pricefloat_list[x], krypto_exchangerate_list[x])]
-    #kryptovalue_list = kryptovalue_list + [kryptovalue(krypto_amount_list[x], 1, 1)]
 
 # Daily % change in stock value
 
@@ -682,21 +614,15 @@ stock_daily_change_pers_list = []
 for x in range(0, number_of_stocks_int):
     stock_daily_change_pers_list = stock_daily_change_pers_list + [laststockpricechange(previous_stock_closefloat_list[x], stock_current_pricefloat_list[x])]
 
-# Daily % change in Krypto value
-#krypto_daily_change_pers_list = []
-#for x in range(0, number_of_kryptos_int):
-    #krypto_daily_change_pers_list = krypto_daily_change_pers_list + [lastkryptopricechange(previous_krypto_closefloat_list[x], krypto_current_pricefloat_list[x])]
-
-
 
 stock_paid_list = []
 for x in range(0, number_of_stocks_int):
-    stock_paid_list = stock_paid_list + [stockvalue(stock_gav_kurs[x], stock_amount_list[x], stock_exchangerate_list[x])]
+    stock_paid_list = stock_paid_list + [stockvalue(stock_gav_kurs_list[x], stock_amount_list[x], stock_exchangerate_list[x])]
 
 
 krypto_paid_list = []
 for x in range(0, number_of_kryptos_int):
-    krypto_paid_list = krypto_paid_list + [kryptovalue(krypto_gav_kurs[x], krypto_amount_list[x], krypto_exchangerate_list[x])]
+    krypto_paid_list = krypto_paid_list + [kryptovalue(krypto_gav_kurs_list[x], krypto_amount_list[x], krypto_exchangerate_list[x])]
 
 
 #Difference in price, current value - paid value
@@ -727,7 +653,6 @@ real_estate_3_difference = realestatedifference(cash_in_apartment3_float, real_e
 stock_total_pers_change_list = []
 for x in range(0, number_of_stocks_int):
     stock_total_pers_change_list = stock_total_pers_change_list + [(100 * stock_diff_list[x] / stock_paid_list[x])]
-
 
 # Daily % change in krypto value
 krypto_total_pers_change_list = []
@@ -863,12 +788,10 @@ def krypto_buy(maxpersofinvestment, percentage, currprice, buyunder, cashfloat, 
                 buy = True
     return buy
 
-
-
-buy_recommendation_list = []
+stock_buy_recommendation_list = []
 for x in range(0, number_of_stocks_int):
-    buy_recommendation_list = buy_recommendation_list + [stock_buy(stock_max_pers_of_investments[x], stock_percentage_list[x],
-                              stock_current_pricefloat_list[x], buy_price_recommendations[x], cashfloat,
+    stock_buy_recommendation_list = stock_buy_recommendation_list + [stock_buy(stock_max_pers_of_investments_list[x], stock_percentage_list[x],
+                              stock_current_pricefloat_list[x], stock_buy_price_recommendations_list[x], cashfloat,
                               minimumbuyfloat)] #, stockspercentage, stocks_max_pers_of_investments)]
 
 '''
@@ -926,9 +849,9 @@ calculated_data = {
                        'USD/SEK exchange rate': 'value',
                        'Philippine Peso/SEK exchange rate': 'value',
                        'USD/Euro exchange rate': 'value',
-                       'Canadian/Euro exchange rate': 42}}
+                       'Canadian/Euro exchange rate': 'value'}}
 # Write JSON file
-with io.open('data\calculated_data.json', 'w', encoding='utf8') as outfile:
+with io.open(r'C:\Users\JannePC-Skylake\PycharmProjects\StockPortfolio\stockportfolio\src\data\calculated_data.json', 'w', encoding='utf8') as outfile:
         str_ = json.dumps(calculated_data,
                           indent=4, sort_keys=True,
                           separators=(',', ': '), ensure_ascii=False)
@@ -942,7 +865,7 @@ stock_data = {
 #with open('data\data.json', 'w') as outfile:
 #    json.dump(data, outfile)
 # Write JSON file
-with io.open('data\stocks.json', 'w', encoding='utf8') as outfile:
+with io.open(r'C:\Users\JannePC-Skylake\PycharmProjects\StockPortfolio\stockportfolio\src\data\stocks.json', 'w', encoding='utf8') as outfile:
         str_ = json.dumps(stock_data,
                           indent=4, sort_keys=True,
                           separators=(',', ': '), ensure_ascii=False)
@@ -1044,7 +967,7 @@ class Kryptotable(Frame):
     def LoadKryptoTable(self):
         for x in range(0, number_of_kryptos_int):
             self.treeview.insert('', 'end',
-                                 text=krypto_name[x], values=(
+                                 text=krypto_name_list[x], values=(
                                  '%.2f' % krypto_current_pricefloat_list[x] + ' $',  #2 OK
                                  '%.4f' % krypto_amount_list[x] + ' ',  # 5 OK
                                  '%.2f' % krypto_24h_price_list[x] + ' $',  #3
@@ -1056,9 +979,9 @@ class Kryptotable(Frame):
                                  '%.f' % krypto_paid_list[x] + ' ' + currency,  #11
                                  '%.f' % kryptovalue_list[x] + ' ' + currency,  #12
                                  '%.f' % krypto_diff_list[x] + ' ' + currency,  #13
-                                 '%.2f' % krypto_total_pers_change_list[x] + ' %',
-                                 krypto_forum_list[x],
-                                 krypto_forum_old_value_list[x]
+                                 '%.2f' % krypto_total_pers_change_list[x] + ' %'
+                                 #krypto_forum_list[x],
+                                 #krypto_forum_old_value_list[x]
                                  ))
 
         ttk.Style().configure("Treeview", background="white",
@@ -1208,23 +1131,23 @@ class Stocktable(Frame):
     def LoadStockTable(self):
         for x in range(0, number_of_stocks_int):
             self.treeview.insert('', 'end',
-                                 text=stock_name[x], values=(
-                                 '%.2f' % stock_current_pricefloat_list[x] + ' ' + stock_currency[x],
+                                 text=stock_name_list[x], values=(
+                                 '%.2f' % stock_current_pricefloat_list[x] + ' ' + stock_currency_list[x],
                                  stock_amount_list[x],
-                                 '%.2f' % previous_stock_closefloat_list[x] + ' ' + stock_currency[x],
+                                 '%.2f' % previous_stock_closefloat_list[x] + ' ' + stock_currency_list[x],
                                  '%.2f' % stock_daily_change_pers_list[x] +
-                                 ' %', '%.2f' % buy_price_recommendations_list[x] + ' ' + stock_currency[x],
-                                 '%.2f' % low_price_list[x] + ' ' + stock_currency[x],
-                                 '%.2f' % high_price_list[x] + ' ' + stock_currency[x],
-                                 buy_recommendation_list[x],
-                                 '%.2f' % stock_gav_kurs_list[x] + ' ' + stock_currency[x],
+                                 ' %', '%.2f' % stock_buy_price_recommendations_list[x] + ' ' + stock_currency_list[x],
+                                 '%.2f' % stock_low_price_list[x] + ' ' + stock_currency_list[x],
+                                 '%.2f' % stock_high_price_list[x] + ' ' + stock_currency_list[x],
+                                 stock_buy_recommendation_list[x],
+                                 '%.2f' % stock_gav_kurs_list[x] + ' ' + stock_currency_list[x],
                                  '%.2f' % stock_percentage_list[x] +
                                  ' %', '%.2f' % stock_max_pers_of_investments_list[x] + ' %',
                                  '%.2f' % stock_paid_list[x] + ' ' + currency,
                                  '%.2f' % stockvalue_list[x] + ' ' + currency,
                                  '%.2f' % stock_diff_list[x] + ' ' + currency,
                                  '%.2f' % stock_total_pers_change_list[x] + ' %',
-                                 sales_target[x]))
+                                 stock_sales_target_list[x]))
         '''
 
         '''    
@@ -1234,7 +1157,7 @@ class Stocktable(Frame):
     def LoadKryptoTable(self):
         for x in range(0, number_of_kryptos_int):
             self.treeview.insert('', 'end',
-                                 text=krypto_name[x], values=(
+                                 text=krypto_name_list[x], values=(
                                  '%.2f' % krypto_current_pricefloat_list[x] + ' $',  #2 OK
                                  '%.4f' % krypto_amount_list[x] + ' ',  # 5 OK
                                  '%.2f' % krypto_24h_price_list[x] + ' $',  #3
@@ -1246,9 +1169,9 @@ class Stocktable(Frame):
                                  '%.f' % krypto_paid_list[x] + ' ' + currency,  #11
                                  '%.f' % kryptovalue_list[x] + ' ' + currency,  #12
                                  '%.f' % krypto_diff_list[x] + ' ' + currency,  #13
-                                 '%.2f' % krypto_total_pers_change_list[x] + ' %',
-                                 krypto_forum_list[x],
-                                 krypto_forum_old_value_list[x]
+                                 '%.2f' % krypto_total_pers_change_list[x] + ' %'
+                                 #krypto_forum_list[x],
+                                 #krypto_forum_old_value_list[x]
                                  ))
 
         ttk.Style().configure("Treeview", background="white",
@@ -1304,42 +1227,42 @@ class Stocktable(Frame):
     def LoadSummaryTable(self):
         self.treeview.insert('', 'end', text='Stocks', values=('', '', '', '%.2f' % stocks_daily_portfolio_development +
                                                          ' %', '', '', '', '', '%.2f' % stockspercentage +
-                                                         ' %', stock_total_max_pers_of_investments +
-                                                         ' %',  '%.f' % total_stocks_paid_value + ' ' + currency,
+                                                         ' %', stock_total_max_pers_of_investments, ' %',
+                                                         '%.f' % total_stocks_paid_value, currency,
                                                          '%.f' % sumofallstocks + ' ' + currency, '',
                                                          '%.f' % allstocksdifference + ' ' + currency,
                                                          '%.2f' % stocks_total_change + ' %', ''))
         self.treeview.insert('', 'end', text='Kryptos', values=('', '', '', '%.2f' % kryptos_daily_portfolio_development +
                                                          ' %', '', '', '', '', '%.2f' % kryptospercentage +
-                                                         ' %', krypto_total_max_pers_of_investments +
-                                                         ' %',  '%.f' % total_kryptos_paid_value + ' ' + currency,
+                                                         ' %', krypto_total_max_pers_of_investments, ' %',
+                                                         '%.f' % total_kryptos_paid_value + ' ' + currency,
                                                          '%.f' % sumofallkryptos + ' ' + currency, '',
                                                          '%.f' % allkryptosdifference + ' ' + currency,
                                                          '%.2f' % kryptos_total_change + ' %', ''))
         self.treeview.insert('', 'end', text='Cash', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashpercentage + ' %', cash_total_max_pers_of_investments +
-                                                         ' %','', '%.f' % cashfloat + ' ' + currency, '', ''))
+        '', '', '', '', '', '', '', '', '%.2f' % cashpercentage + ' %', cash_total_max_pers_of_investments, ' %',
+        '', '%.f' % cashfloat + ' ' + currency, '', ''))
         self.treeview.insert('', 'end', text='Real Estate 1', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment1percentage + ' %', real_estate_1_total_max_pers_of_investments +
-                                                         ' %',real_estate_1_paid_amount + ' ' + currency, '%.f' % float(current_est_value_apartment) +
-                                                        ' ' + currency, '%.f' % debtfloat + ' ' + currency, '%.f' % real_estate_1_difference + ' ' + currency, '%.2f' % real_esteate_1_total_change + ' %'))
+        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment1percentage + ' %', real_estate_1_total_max_pers_of_investments,
+                                                         ' %', real_estate_1_paid_amount, ' ', currency, '%.f' % float(current_est_value_apartment), currency,
+                                                         '%.f' % debtfloat, currency, '%.f' % real_estate_1_difference, currency, '%.2f' % real_esteate_1_total_change, ' %'))
         self.treeview.insert('', 'end', text='Real Estate 2', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment2percentage + ' %', real_estate_2_total_max_pers_of_investments +
-                                                         ' %', real_estate_2_paid_amount + ' ' + currency,
-                        '%.f' % cash_in_apartment2_float + ' ' + currency, '', '%.2f' % real_estate_2_difference + ' ' + currency,'%.2f' % real_esteate_2_total_change + ' %'))
+        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment2percentage + ' %', real_estate_2_total_max_pers_of_investments,
+                                                         ' %', real_estate_2_paid_amount, ' ', currency,
+                        '%.f' % cash_in_apartment2_float, ' ', currency, '', '%.2f' % real_estate_2_difference, ' ', currency,'%.2f' % real_esteate_2_total_change, ' %'))
         self.treeview.insert('', 'end', text='Real Estate 3', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment3percentage + ' %',  real_estate_3_total_max_pers_of_investments +
-                                                         ' %', real_estate_3_paid_amount + ' ' + currency,
-                        '%.f' % cash_in_apartment3_float + ' ' + currency, '', '%.f' % real_estate_3_difference + ' ' + currency, '%.2f' % real_esteate_3_total_change + ' %'))
+        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment3percentage + ' %',  real_estate_3_total_max_pers_of_investments,
+                                                         ' %', real_estate_3_paid_amount, ' ', currency,
+                        '%.f' % cash_in_apartment3_float,' ', currency, '', '%.f' % real_estate_3_difference, ' ', currency, '%.2f' % real_esteate_3_total_change, ' %'))
         self.treeview.insert('', 'end', text='Other investments', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % otherinvestmentspercentage + ' %', other_investments_total_max_pers_of_investments +
-                                                         ' %', '%.f' % other_investmentsfloat + ' ' + currency,
-                        '%.f' % other_investmentsfloat + ' ' + currency, '', ''))
+        '', '', '', '', '', '', '', '', '%.2f' % otherinvestmentspercentage,' %', other_investments_total_max_pers_of_investments,
+                                                         ' %', '%.f' % other_investmentsfloat,' ', currency,
+                        '%.f' % other_investmentsfloat + ' ', currency, '', ''))
         self.treeview.insert('', 'end', text='Money loaned', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % loangivenspercentage + ' %',loan_given_total_max_pers_of_investments + ' %','',
-                        '%.f' % loan_given_float + ' ' + currency,'',''))
+        '', '', '', '', '', '', '', '', '%.2f' % loangivenspercentage, ' %',loan_given_total_max_pers_of_investments,' %','',
+                        '%.f' % loan_given_float, ' ', currency,'',''))
         self.treeview.insert('', 'end', text='Gold', values=(
-        '%.2f' % goldusd + ' USD/Onz', '%.2f' % goldsek + ' SEK/Onz', '%.f' % goldonzfloat  + ' Onz', '', '', '', '','', '%.2f' % goldpercentage + ' %', gold_total_max_pers_of_investments + ' %', '', '%.f' % gold + ' ' + currency, '' ))
+        '%.2f' % goldusd, ' USD/Onz', '%.2f' % goldsek, ' SEK/Onz', '%.f' % goldonzfloat, ' Onz', '', '', '', '','', '%.2f' % goldpercentage, ' %', gold_total_max_pers_of_investments, ' %', '', '%.f' % gold, ' ', currency, '' ))
                         #+ ' USD/Onz', '%.2f' % goldsek + ' SEK/Onz', '%.2f' % goldusdchangepers + ' %', '', 'GDX: '
                         #+ '%.2f' % goldgdxusd + ' $', 'GDX Change: ' + '%.2f' % goldgdxperschange + ' %', 'GDXJ: '
                         #+ '%.2f' % goldgdxjusd + ' $', 'GDXJ Change: ' + '%.2f' % goldgdxjperschange
@@ -1411,13 +1334,13 @@ class Stocktable(Frame):
         self.treeview.insert('', 'end', text='Minimum buy', values=(
         '%.f' % minimumbuyfloat + ' ' + currency, 'Monthly salary', '%.f' % monthly_salary  + ' ' + currency, '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Cash in Account 1', values=(
-        '%.f' % cash_account1_float + ' ' + currency, 'Debt Interest rate', debt_interest_rate + ' %', 'Annual salary', '%.f' % annual_salary  + ' ' + currency, '', '', '', '', '', '', '', ''))
+        '%.f' % cash_account1_float, ' ', currency, 'Debt Interest rate', debt_interest_rate, ' %', 'Annual salary', '%.f' % annual_salary, ' ', currency, '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Cash in Account 2', values=(
-        '%.f' % cash_account2_float + ' ' + currency, 'Required % banks require paid for apart', pers_bank_require_downpayment_for_loan + ' %', '', '', '', '', '', '', '', '', '', ''))
+        '%.f' % cash_account2_float, ' ', currency, 'Required % banks require paid for apart', pers_bank_require_downpayment_for_loan, ' %', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Max amount of cash you can get, apartment', values=(
-        '%.f' % max_loan_cash + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', '', ''))
+        '%.f' % max_loan_cash, ' ', currency, '', '', '', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Net worth', values=(
-        '%.f' % net_worth  + ' ' + currency, 'Monthly loan payment', '%.f' % monthly_loan_payments + ' ' + currency, 'Financial Goal', '%.f' % dollar_goal + ' $', '%.f' % sek_goal +
+        '%.f' % net_worth  + ' ', currency, 'Monthly loan payment', '%.f' % monthly_loan_payments + ' ', currency, 'Financial Goal', '%.f' % dollar_goal + ' $', '%.f' % sek_goal +
          ' ' + currency, 'Missing from financial goal', '%.f' % missing_from_goal + ' ' + currency , 'Net worth + Debt',  '%.f' % sumofinvestments + ' ' + currency, 'Last Updated', time.ctime(), '', '', '' ))
 
 
@@ -1480,19 +1403,19 @@ def my_stocks():
     stocks_tk.entry_list = []
     for x in range(0, 8):
         stocks_tk.stock_name_entry = tkinter.Entry(stocks_tk)
-        stocks_tk.stock_name_entry.insert(x, stock_name[x])
+        stocks_tk.stock_name_entry.insert(x, stock_name_list[x])
         stocks_tk.stock_name_entry.grid(row=x+1, column=0)
 
         stocks_tk.buy_price_recommendations_entry = tkinter.Entry(stocks_tk)
-        stocks_tk.buy_price_recommendations_entry.insert(x, buy_price_recommendations_list[x])
+        stocks_tk.buy_price_recommendations_entry.insert(x, stock_buy_price_recommendations_list[x])
         stocks_tk.buy_price_recommendations_entry.grid(row=x+1, column=1)
 
         stocks_tk.low_price_entry = tkinter.Entry(stocks_tk)
-        stocks_tk.low_price_entry.insert(x, low_price_list[x])
+        stocks_tk.low_price_entry.insert(x, stock_low_price_list[x])
         stocks_tk.low_price_entry.grid(row=x+1, column=2)
 
         stocks_tk.high_price_entry = tkinter.Entry(stocks_tk)
-        stocks_tk.high_price_entry.insert(x, high_price_list[x])
+        stocks_tk.high_price_entry.insert(x, stock_high_price_list[x])
         stocks_tk.high_price_entry.grid(row=x+1, column=2)
 
         stocks_tk.amount_entry = tkinter.Entry(stocks_tk)
@@ -1504,7 +1427,7 @@ def my_stocks():
         stocks_tk.gav_kurs_entry.grid(row=x+1, column=4)
 
         stocks_tk.currency_entry = tkinter.Entry(stocks_tk)
-        stocks_tk.currency_entry.insert(x, stock_currency[x])
+        stocks_tk.currency_entry.insert(x, stock_currency_list[x])
         stocks_tk.currency_entry.grid(row=x+1, column=5)
 
         stocks_tk.max_pers_of_investments_entry = tkinter.Entry(stocks_tk)
@@ -1512,11 +1435,11 @@ def my_stocks():
         stocks_tk.max_pers_of_investments_entry.grid(row=x+1, column=6)
 
         stocks_tk.stock_web_page_entry = tkinter.Entry(stocks_tk)
-        stocks_tk.stock_web_page_entry.insert(x, stock_web_page[x])
+        stocks_tk.stock_web_page_entry.insert(x, stock_web_page_list[x])
         stocks_tk.stock_web_page_entry.grid(row=x+1, column=7)
 
         stocks_tk.sales_target_entry = tkinter.Entry(stocks_tk)
-        stocks_tk.sales_target_entry.insert(x, sales_target_list[x])
+        stocks_tk.sales_target_entry.insert(x, stock_sales_target_list[x])
         stocks_tk.sales_target_entry.grid(row=x+1, column=8)
 
         stocks_tk.save_button = tkinter.Button(stocks_tk, text="Save", command=donothing)
@@ -1656,22 +1579,6 @@ class Menues(Frame):
 
 
 def main():
-
-    #json
-    # Define data
-    data = {'a list': [1, 42, 3.141, 1337, 'help', u'€'],
-            'a string': 'bla',
-            'another dict': {'foo': 'bar',
-                             'key': 'value',
-                             'the answer': 42}}
-    #with open('data\data.json', 'w') as outfile:
-    #    json.dump(data, outfile)
-    # Write JSON file
-    with io.open('data\data.json', 'w', encoding='utf8') as outfile:
-        str_ = json.dumps(data,
-                          indent=4, sort_keys=True,
-                          separators=(',', ': '), ensure_ascii=False)
-        outfile.write(to_unicode(str_))
 
     #Creates StockPortfolio main window
     root = Tk()

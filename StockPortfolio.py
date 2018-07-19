@@ -843,15 +843,81 @@ def highlight_max(data, color='yellow'):
 
 #json
 #Define data
+def create_calculated_data_json():
+
+  for x in range(0, number_of_stocks_int):
+    stocks_calculated_data = {
+    print(stock_name_list[x])
+  }
+  '''
+  "Stocks": [
+  {
+  "stock[]": stock_name_list[x],
+  "goldsek": goldsek,
+  "gold": gold,
+  }
+  ]
+}
+'''
+
 calculated_data = {
-   'Calculated Data': {'Euro/Swedish exchange rate': stocks_total_change,
-                       'Canadian/Swedish exchange rate': 'value',
-                       'USD/SEK exchange rate': 'value',
-                       'Philippine Peso/SEK exchange rate': 'value',
-                       'USD/Euro exchange rate': 'value',
-                       'Canadian/Euro exchange rate': 'value'}}
-# Write JSON file
-with io.open(r'C:\Users\JannePC-Skylake\PycharmProjects\StockPortfolio\stockportfolio\src\data\calculated_data.json', 'w', encoding='utf8') as outfile:
+  "Currency Exchange Rates":[
+    {
+      'Euro/Swedish exchange rate': eursekratefloat,
+      'Canadian/Swedish exchange rate': cadsekratefloat,
+      'USD/SEK exchange rate': usdsekratefloat,
+      'Philippine Peso/SEK exchange rate': phpsekratefloat,
+      'USD/Euro exchange rate': usdeurratefloat,
+      'Canadian/Euro exchange rate': cadeurratefloat
+    }
+    ],
+    "Golds": [
+    {
+      "goldusd": goldusd,
+      "goldsek": goldsek,
+      "gold": gold,
+    }
+    ],
+    "Real Estates":  [
+    {
+      "real_esteate_1_total_change": real_esteate_1_total_change,
+      "real_esteate_2_total_change": real_esteate_2_total_change,
+      "real_esteate_3_total_change": real_esteate_3_total_change
+    }
+    ],
+    "Stocks": [
+    {
+      "stocks_total_change": stocks_total_change
+    }
+    ],
+    "Kryptos": [
+    {
+      "kryptos_total_change": kryptos_total_change
+    }
+    ]
+    ,
+  }
+
+eursekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=SEK')
+cadsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=CAD&To=SEK')
+usdsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=USD&To=SEK')
+phpsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=PHP&To=SEK')
+cadeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=CAD&To=EUR')
+usdeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=USD&To=EUR')
+
+sekeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=EUR')
+sekcadratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=CAD')
+sekusdratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=USD')
+sekphpratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=PHP')
+eurcadratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=EUR&To=CAD')
+eurusdratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=USD')
+xauusdratefloat = returnexchangerate('https://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=XAU&To=USD')
+
+
+# Write Calculated data
+calculated_data_path = "stockportfolio\src\data\calculated_data.json"
+calculated_data_abs_file_path = os.path.join(script_dir, calculated_data_path)
+with io.open(calculated_data_abs_file_path, 'w', encoding='utf8') as outfile:
         str_ = json.dumps(calculated_data,
                           indent=4, sort_keys=True,
                           separators=(',', ': '), ensure_ascii=False)
@@ -973,7 +1039,7 @@ class Kryptotable(Frame):
                                  '%.2f' % krypto_24h_price_list[x] + ' $',  #3
                                  '%.2f' % krypto_daily_change_pers_list[x] + ' %',  #3 OK
                                  '%.f' % krypto24hvolume_list[x] + ' $',  #4 OK
-                                 '%.2f' % krypto_gav_kurs_list[x] + ' ' + krypto_currency[x],  #6 OK
+                                 '%.2f' % krypto_gav_kurs_list[x] + ' $',  #6 OK
                                  '%.2f' % krypto_percentage_list[x] + ' %',  #7 NOK
                                  '%.2f' % krypto_max_pers_of_investments_list[x] + ' %',  #10
                                  '%.f' % krypto_paid_list[x] + ' ' + currency,  #11
@@ -1163,7 +1229,7 @@ class Stocktable(Frame):
                                  '%.2f' % krypto_24h_price_list[x] + ' $',  #3
                                  '%.2f' % krypto_daily_change_pers_list[x] + ' %',  #3 OK
                                  '%.f' % krypto24hvolume_list[x] + ' $',  #4 OK
-                                 '%.2f' % krypto_gav_kurs_list[x] + ' ' + krypto_currency[x],  #6 OK
+                                 '%.2f' % krypto_gav_kurs_list[x] + ' $',  #6 OK
                                  '%.2f' % krypto_percentage_list[x] + ' %',  #7 NOK
                                  '%.2f' % krypto_max_pers_of_investments_list[x] + ' %',  #10
                                  '%.f' % krypto_paid_list[x] + ' ' + currency,  #11
@@ -1227,42 +1293,42 @@ class Stocktable(Frame):
     def LoadSummaryTable(self):
         self.treeview.insert('', 'end', text='Stocks', values=('', '', '', '%.2f' % stocks_daily_portfolio_development +
                                                          ' %', '', '', '', '', '%.2f' % stockspercentage +
-                                                         ' %', stock_total_max_pers_of_investments, ' %',
-                                                         '%.f' % total_stocks_paid_value, currency,
+                                                         ' %','%.f' % stock_total_max_pers_of_investments + ' %',
+                                                         '%.f' % total_stocks_paid_value + ' ' + currency,
                                                          '%.f' % sumofallstocks + ' ' + currency, '',
                                                          '%.f' % allstocksdifference + ' ' + currency,
                                                          '%.2f' % stocks_total_change + ' %', ''))
         self.treeview.insert('', 'end', text='Kryptos', values=('', '', '', '%.2f' % kryptos_daily_portfolio_development +
                                                          ' %', '', '', '', '', '%.2f' % kryptospercentage +
-                                                         ' %', krypto_total_max_pers_of_investments, ' %',
+                                                         ' %', '%.f' % krypto_total_max_pers_of_investments + ' %',
                                                          '%.f' % total_kryptos_paid_value + ' ' + currency,
                                                          '%.f' % sumofallkryptos + ' ' + currency, '',
                                                          '%.f' % allkryptosdifference + ' ' + currency,
                                                          '%.2f' % kryptos_total_change + ' %', ''))
         self.treeview.insert('', 'end', text='Cash', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashpercentage + ' %', cash_total_max_pers_of_investments, ' %',
+        '', '', '', '', '', '', '', '', '%.2f' % cashpercentage + ' %', '%.f' % cash_total_max_pers_of_investments +' %',
         '', '%.f' % cashfloat + ' ' + currency, '', ''))
         self.treeview.insert('', 'end', text='Real Estate 1', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment1percentage + ' %', real_estate_1_total_max_pers_of_investments,
-                                                         ' %', real_estate_1_paid_amount, ' ', currency, '%.f' % float(current_est_value_apartment), currency,
-                                                         '%.f' % debtfloat, currency, '%.f' % real_estate_1_difference, currency, '%.2f' % real_esteate_1_total_change, ' %'))
+        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment1percentage + ' %', '%.f' % real_estate_1_total_max_pers_of_investments + ' %',
+        '%.f' % real_estate_1_paid_amount + ' ' + currency, '%.f' % float(current_est_value_apartment) + ' ' + currency,
+                                                         '%.f' % debtfloat + ' ' + currency, '%.f' % real_estate_1_difference + ' ' + currency, '%.2f' % real_esteate_1_total_change + ' %'))
         self.treeview.insert('', 'end', text='Real Estate 2', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment2percentage + ' %', real_estate_2_total_max_pers_of_investments,
-                                                         ' %', real_estate_2_paid_amount, ' ', currency,
-                        '%.f' % cash_in_apartment2_float, ' ', currency, '', '%.2f' % real_estate_2_difference, ' ', currency,'%.2f' % real_esteate_2_total_change, ' %'))
+        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment2percentage + ' %', '%.f' % real_estate_2_total_max_pers_of_investments + ' %',
+        '%.f' % real_estate_2_paid_amount + ' ' + currency,
+                        '%.f' % cash_in_apartment2_float + ' ' + currency, '', '%.2f' % real_estate_2_difference + ' ' + currency, '%.2f' % real_esteate_2_total_change + ' %'))
         self.treeview.insert('', 'end', text='Real Estate 3', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment3percentage + ' %',  real_estate_3_total_max_pers_of_investments,
-                                                         ' %', real_estate_3_paid_amount, ' ', currency,
-                        '%.f' % cash_in_apartment3_float,' ', currency, '', '%.f' % real_estate_3_difference, ' ', currency, '%.2f' % real_esteate_3_total_change, ' %'))
+        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment3percentage + ' %', '%.f' %  real_estate_3_total_max_pers_of_investments + ' %',
+                                '%.f' % real_estate_3_paid_amount + ' ' + currency,
+                        '%.f' % cash_in_apartment3_float + ' ' + currency, '', '%.f' % real_estate_3_difference + ' ' + currency, '%.2f' % real_esteate_3_total_change + ' %'))
         self.treeview.insert('', 'end', text='Other investments', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % otherinvestmentspercentage,' %', other_investments_total_max_pers_of_investments,
-                                                         ' %', '%.f' % other_investmentsfloat,' ', currency,
-                        '%.f' % other_investmentsfloat + ' ', currency, '', ''))
+        '', '', '', '', '', '', '', '', '%.2f' % otherinvestmentspercentage + ' %', '%.f' % other_investments_total_max_pers_of_investments + ' %',
+                                                         '%.f' % other_investmentsfloat + ' ' + currency,
+                        '%.f' % other_investmentsfloat + ' ' + currency, '', ''))
         self.treeview.insert('', 'end', text='Money loaned', values=(
-        '', '', '', '', '', '', '', '', '%.2f' % loangivenspercentage, ' %',loan_given_total_max_pers_of_investments,' %','',
-                        '%.f' % loan_given_float, ' ', currency,'',''))
+        '', '', '', '', '', '', '', '', '%.2f' % loangivenspercentage + ' %', '%.f' % loan_given_total_max_pers_of_investments + ' %','',
+                        '%.f' % loan_given_float + ' ' + currency,'',''))
         self.treeview.insert('', 'end', text='Gold', values=(
-        '%.2f' % goldusd, ' USD/Onz', '%.2f' % goldsek, ' SEK/Onz', '%.f' % goldonzfloat, ' Onz', '', '', '', '','', '%.2f' % goldpercentage, ' %', gold_total_max_pers_of_investments, ' %', '', '%.f' % gold, ' ', currency, '' ))
+        '%.2f' % goldusd + ' USD/Onz', '%.2f' % goldsek + ' SEK/Onz', '%.f' % goldonzfloat + ' Onz', '', '', '', '','', '%.2f' % goldpercentage + ' %', '%.f' % gold_total_max_pers_of_investments + ' %', '', '%.f' % gold + ' ' + currency, '' ))
                         #+ ' USD/Onz', '%.2f' % goldsek + ' SEK/Onz', '%.2f' % goldusdchangepers + ' %', '', 'GDX: '
                         #+ '%.2f' % goldgdxusd + ' $', 'GDX Change: ' + '%.2f' % goldgdxperschange + ' %', 'GDXJ: '
                         #+ '%.2f' % goldgdxjusd + ' $', 'GDXJ Change: ' + '%.2f' % goldgdxjperschange
@@ -1280,9 +1346,9 @@ class Stocktable(Frame):
         tv.heading("#0", text='Personal data', anchor='w')
         tv.column("#0", anchor="w")
         tv.heading('currprice', text='')
-        tv.column('currprice', anchor='center', width=100)
+        tv.column('currprice', anchor='center', width=130)
         tv.heading('amount', text='')
-        tv.column('amount', anchor='center', width=100)
+        tv.column('amount', anchor='center', width=130)
         tv.heading('prevclose', text='')
         tv.column('prevclose', anchor='center', width=230)
         tv.heading('daychangepers', text='')
@@ -1334,13 +1400,13 @@ class Stocktable(Frame):
         self.treeview.insert('', 'end', text='Minimum buy', values=(
         '%.f' % minimumbuyfloat + ' ' + currency, 'Monthly salary', '%.f' % monthly_salary  + ' ' + currency, '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Cash in Account 1', values=(
-        '%.f' % cash_account1_float, ' ', currency, 'Debt Interest rate', debt_interest_rate, ' %', 'Annual salary', '%.f' % annual_salary, ' ', currency, '', '', '', '', '', '', '', ''))
+        '%.f' % cash_account1_float + ' ' + currency, 'Debt Interest rate', '%.f' % debt_interest_rate + ' %', 'Annual salary', '%.f' % annual_salary + ' ' + currency, '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Cash in Account 2', values=(
-        '%.f' % cash_account2_float, ' ', currency, 'Required % banks require paid for apart', pers_bank_require_downpayment_for_loan, ' %', '', '', '', '', '', '', '', '', '', ''))
+        '%.f' % cash_account2_float + ' ' + currency, 'Required % banks require paid for apart', '%.f' % pers_bank_require_downpayment_for_loan + ' %', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Max amount of cash you can get, apartment', values=(
-        '%.f' % max_loan_cash, ' ', currency, '', '', '', '', '', '', '', '', '', '', '', '', ''))
+        '%.f' % max_loan_cash + ' ' + currency, '', '', '', '', '', '', '', '', '', '', '', '', ''))
         self.treeview.insert('', 'end', text='Net worth', values=(
-        '%.f' % net_worth  + ' ', currency, 'Monthly loan payment', '%.f' % monthly_loan_payments + ' ', currency, 'Financial Goal', '%.f' % dollar_goal + ' $', '%.f' % sek_goal +
+        '%.f' % net_worth + ' ' + currency, 'Monthly loan payment', '%.f' % monthly_loan_payments + ' ' + currency, 'Financial Goal', '%.f' % dollar_goal + ' $', '%.f' % sek_goal +
          ' ' + currency, 'Missing from financial goal', '%.f' % missing_from_goal + ' ' + currency , 'Net worth + Debt',  '%.f' % sumofinvestments + ' ' + currency, 'Last Updated', time.ctime(), '', '', '' ))
 
 
@@ -1586,11 +1652,12 @@ def main():
     Stocktable(root)
 
     #Creates KryptoPortfolio
-    root2 = Tk()
-    root2.wm_title("KryptoPortfolio")
-    Kryptotable(root2)
+    #root2 = Tk()
+    #root2.wm_title("KryptoPortfolio")
+    #Kryptotable(root2)
     #StatusBar(root)
     #Menues(root)
+
 
     menubar = Menu(root)
     filemenu = Menu(menubar, tearoff=0)
@@ -1604,9 +1671,10 @@ def main():
     graphmenu.add_command(label="Investments Chart + cash in Real Estates - Pie Diagram", command=piechart_inc_apartment)
     menubar.add_cascade(label="Graphs", menu=graphmenu)
     root.config(menu=menubar)
+    create_calculated_data_json
 
     root.mainloop()
-    root2.mainloop()
+    #root2.mainloop()
 
 if __name__ == '__main__':
     main()

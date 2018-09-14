@@ -5,12 +5,9 @@ import pip
 import time
 print(pip.pep425tags.get_supported())
 from lxml import html
-from lxml import etree
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import *
-import datetime
 import json
 import numpy as np
 pd.set_option('display.max_rows', 500)
@@ -43,6 +40,7 @@ cash_account1 = personal_data['cash_account1']
 cash_account2 = personal_data['cash_account2']
 loan_given = personal_data['loan_given']
 cash_in_apartment3 = personal_data['cash_in_apartment3']
+cash_in_apartment4 = personal_data['cash_in_apartment4']
 other_investments = personal_data['other_investments']
 goldonz = personal_data['goldonz']
 minimumbuy = personal_data['minimumbuy']
@@ -75,15 +73,18 @@ cash_total_max_pers_of_investments = personal_data['cash_total_max_pers_of_inves
 real_estate_1_total_max_pers_of_investments = personal_data['real_estate_total_1_max_pers_of_investments']
 real_estate_2_total_max_pers_of_investments = personal_data['real_estate_total_2_max_pers_of_investments']
 real_estate_3_total_max_pers_of_investments = personal_data['real_estate_total_3_max_pers_of_investments']
+real_estate_4_total_max_pers_of_investments = personal_data['real_estate_total_3_max_pers_of_investments']
 other_investments_total_max_pers_of_investments = personal_data['other_investments_total_max_pers_of_investments']
 loan_given_total_max_pers_of_investments = personal_data['loan_given_total_max_pers_of_investments']
 gold_total_max_pers_of_investments = personal_data['gold_total_max_pers_of_investments']
 real_estate_1_paid_amount = personal_data['real_estate_1_paid_amount']
 real_estate_2_paid_amount = personal_data['real_estate_2_paid_amount']
 real_estate_3_paid_amount = personal_data['real_estate_3_paid_amount']
+real_estate_4_paid_amount = personal_data['real_estate_4_paid_amount']
 real_estate_1_paid_amount_float = float(real_estate_1_paid_amount)
 real_estate_2_paid_amount_float = float(real_estate_2_paid_amount)
 real_estate_3_paid_amount_float = float(real_estate_3_paid_amount)
+real_estate_4_paid_amount_float = float(real_estate_4_paid_amount)
 
 number_of_kryptos_int = int(number_of_kryptos)
 
@@ -200,34 +201,59 @@ print("stock_max_pers_of_investments_list[1] : " ,stock_max_pers_of_investments_
 #Exchange rates
 ########################
 
-def returnexchangerate(xecurrencywebpage):
-    page = requests.get(xecurrencywebpage)
+def returnexchangerate(xratescurrencywebpage):
+    page = requests.get(xratescurrencywebpage)
+    print("xrate page: ", xratescurrencywebpage)
     tree = html.fromstring(page.content)
-    rate = tree.xpath('//*[@id="ucc-container"]/span[2]/span[2]/text()')
+    rate = tree.xpath('//*[@id="content"]/div[1]/div/div[1]/div/div/span[2]/text()')
     ratestr = ''.join(rate)
-    print("ratestr: ",ratestr)
+    print("ratestr: ", ratestr)
     replacespace = ratestr.replace('\xa0', '')
     exchangeratefloat = float(replacespace.replace(',', '.'))
     print("exchangeratefloat: ", exchangeratefloat)
     return exchangeratefloat
 
-eursekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=SEK')
-cadsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=CAD&To=SEK')
-usdsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=USD&To=SEK')
-phpsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=PHP&To=SEK')
-cadeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=CAD&To=EUR')
-usdeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=USD&To=EUR')
 
-sekeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=EUR')
-sekcadratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=CAD')
-sekusdratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=USD')
-sekphpratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=PHP')
-eurcadratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=EUR&To=CAD')
-eurusdratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=USD')
-xauusdratefloat = returnexchangerate('https://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=XAU&To=USD')
+def returngoldrate(xecurrencywebpage):
+    page = requests.get(xecurrencywebpage)
+    tree = html.fromstring(page.content)
+    #rate = tree.xpath('//*[@id="ucc-container"]/span[2]/span[2]/text()')
+    rate = tree.xpath('//*[@id="historicalRateTbl"]/tbody/tr[2]/td[4]/text()')
+    ratestr = ''.join(rate)
+    print("ratestr: ",ratestr)
+    replacespace = ratestr.replace('\xa0', '')
+    goldrate = replacespace.replace(',', '')
+    print("goldrate: ", goldrate)
+    goldratefloat = float(goldrate.replace('.', '.'))
+    print("goldratefloat: ", goldratefloat)
+    return goldratefloat
+
+
+eursekratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=EUR&to=SEK&amount=1')
+#eursekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=SEK')
+cadsekratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=CAD&to=SEK&amount=1')
+usdsekratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=USD&to=SEK&amount=1')
+phpsekratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=PHP&to=SEK&amount=1')
+cadeurratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=CAD&to=EUR&amount=1')
+usdeurratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=USD&to=EUR&amount=1')
+
+sekeurratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=SEK&to=EUR&amount=1')
+sekcadratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=SEK&to=CAD&amount=1')
+sekusdratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=SEK&to=USD&amount=1')
+sekphpratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=SEK&to=PHP&amount=1')
+eurcadratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=EUR&to=CAD&amount=1')
+eurusdratefloat = returnexchangerate('https://www.x-rates.com/calculator/?from=EUR&to=USD&amount=1')
+#xauusdratefloat = returngoldrate('https://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=XAU&To=USD')
+
+xauusdratefloat=1
+#phpsekratefloat=1
+#xauusdratefloat=1
+#usdsekratefloat=1
 
 cash_in_apartment3_float1 = float(cash_in_apartment3)
 cash_in_apartment3_float = cash_in_apartment3_float1 * phpsekratefloat
+cash_in_apartment4_float1 = float(cash_in_apartment4)
+cash_in_apartment4_float = cash_in_apartment4_float1 * phpsekratefloat
 
 def returngoldusdchangepers():
     goldpage = requests.get('https://bors-nliv.svd.se/index.php/ravaror')
@@ -382,9 +408,9 @@ def stockcurrentprice(webpage):
     tree = html.fromstring(page.content)
     price = tree.xpath('//*[@id="quote_val"]/text()')
     #price = tree.xpath('//div[contains(@id,"data-reactid")]//p//text()')
-    print("price: ", price)
+    print("stock price: ", price)
     pricestr = ''.join(price)
-    print("pricestr: ", pricestr)
+    print("stock pricestr: ", pricestr)
     stockcurrentpricefloat = float(pricestr)
     print("stockcurrentpricefloat: ", stockcurrentpricefloat)
     return stockcurrentpricefloat
@@ -432,6 +458,7 @@ def previousstockclose(webpage):
     page = requests.get(webpage)
     tree = html.fromstring(page.content)
     change = tree.xpath('//*[@id="compare_divId"]/div[3]/ul[1]/li[2]/span[2]/text()')
+    print('previousstockclose change', change)
     changestr = ''.join(change)
     previousstockclosefloat = float(changestr)
     return previousstockclosefloat
@@ -470,7 +497,7 @@ for x in range(0, number_of_stocks_int):
 
 #Krypto 24h Volume
 def krypto24hvolume(kryptowebpage):
-    print("rypto24hvolume")
+    print("krypto24hvolume")
     print("kryptowebpage: ", kryptowebpage)
     page = requests.get(kryptowebpage)
     print("page: ", page)
@@ -480,7 +507,7 @@ def krypto24hvolume(kryptowebpage):
     krypto24hvolume = tree.xpath('normalize-space(/html/body/div[2]/div/div[1]/div[4]/div[2]/div[2]/div/span[1]/span[1]/text())')
     print("krypto24hvolume: ", krypto24hvolume)
     krypto24hvolumestr = ''.join(krypto24hvolume)
-    print("Pkrypto24hvolumestr: ", krypto24hvolumestr)
+    print("Krypto24hvolumestr: ", krypto24hvolumestr)
     krypto24hvolumestr1 = krypto24hvolumestr.replace('$', ' ')
     print("krypto24hvolumestr1: ", krypto24hvolumestr1)
     if (krypto24hvolumestr1 == '?' or krypto24hvolumestr1 == ''):
@@ -500,19 +527,19 @@ def krypto24hchangepers(kryptowebpage):
     print("tree: ", tree)
     #price = tree.xpath('/html/body/div[3]/div/div[1]/div[3]/div[2]/span[2]/text()')
     price = tree.xpath('/html/body/div[2]/div/div[1]/div[4]/div[1]/div[1]/span[2]/span/text()')
-    print("Price: ", price)
+    print("krypto24Price: ", price)
     pricestr = ''.join(price)
-    print("Pricestr: ", pricestr)
+    print("krypto24Pricestr: ", pricestr)
     pricestr1 = pricestr.replace('(', '')
-    print("pricestr1: ", pricestr1)
+    print("krypto24pricestr1: ", pricestr1)
     pricestr2 = pricestr1.replace(')', '')
-    print("pricestr2: ", pricestr2)
+    print("krypto24pricestr2: ", pricestr2)
     if pricestr2 == '':
         pricefloat = 0
         return pricefloat
     else:
         pricefloat = float(pricestr2.replace('%', ''))
-        print("pricefloat: ", pricefloat)
+        print("krypto24pricefloat: ", pricefloat)
         return pricefloat
 
 krypto_daily_change_pers_list = []
@@ -585,19 +612,20 @@ def kryptovalue(amount, pricefloat, ratefloat):
 
 stock_exchangerate_from_list = []
 for x in range(0, number_of_stocks_int):
-    stock_exchangerate_from_list = stock_exchangerate_from_list + [stock_currency_list[x] + currency]
+    stock_exchangerate_from_list = stock_exchangerate_from_list + [stock_currency_list[x]]
 
 krypto_exchangerate_from_list = []
 for x in range(0, number_of_kryptos_int):
-    krypto_exchangerate_from_list = krypto_exchangerate_from_list + [krypto_currency_list[x] + currency]
+    krypto_exchangerate_from_list = krypto_exchangerate_from_list + [krypto_currency_list[x]]
+
 
 stock_exchangerate_list = []
 for x in range(0, number_of_stocks_int):
-    stock_exchangerate_list = stock_exchangerate_list + [returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=' + stock_exchangerate_from_list[x] + '&To=' + currency + '')]
+    stock_exchangerate_list = stock_exchangerate_list + [returnexchangerate('https://www.x-rates.com/calculator/?from=' + stock_exchangerate_from_list[x] + '&to=' + currency + '&amount=1' + '')]
 
 krypto_exchangerate_list = []
 for x in range(0, number_of_kryptos_int):
-    krypto_exchangerate_list = krypto_exchangerate_list + [returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=' + krypto_exchangerate_from_list[x] + '&To=' + currency + '')]
+    krypto_exchangerate_list = krypto_exchangerate_list + [returnexchangerate('https://www.x-rates.com/calculator/?from=' + krypto_exchangerate_from_list[x] + '&to=' + currency + '&amount=1' + '')]
 
 
 stockvalue_list = []
@@ -648,6 +676,7 @@ for x in range(0, number_of_kryptos_int):
 real_estate_1_difference = realestatedifference(float(current_est_value_apartment), real_estate_1_paid_amount_float)
 real_estate_2_difference = realestatedifference(cash_in_apartment2_float, real_estate_2_paid_amount_float)
 real_estate_3_difference = realestatedifference(cash_in_apartment3_float, real_estate_3_paid_amount_float)
+real_estate_4_difference = realestatedifference(cash_in_apartment4_float, real_estate_4_paid_amount_float)
 
 # Daily % change in stock value
 stock_total_pers_change_list = []
@@ -691,7 +720,7 @@ sumofallstocks = sum(sumofallstocks_list)
 sumofallkryptos = sum(sumofallkryptos_list)
 
 #Total sum of current value of all Real Estates
-sumofallrealestate = float(current_est_value_apartment) + cash_in_apartment2_float + cash_in_apartment3_float
+sumofallrealestate = float(current_est_value_apartment) + cash_in_apartment2_float + cash_in_apartment3_float + cash_in_apartment4_float
 
 #Total sum of all investments
 sumofinvestments = cashfloat + sumofallstocks + sumofallkryptos + sumofallrealestate + gold + other_investmentsfloat + loan_given_float
@@ -713,10 +742,16 @@ total_stocks_close_value = sum(stock_previous_close_value_list)
 total_kryptos_24h_value = sum(krypto_24h_value_list)
 
 #Stock development today
-stocks_daily_portfolio_development = 100 * (sumofallstocks - total_stocks_close_value) / total_stocks_close_value
+if total_stocks_close_value != 0:
+    stocks_daily_portfolio_development = 100 * (sumofallstocks - total_stocks_close_value) / total_stocks_close_value
+else:
+    stocks_daily_portfolio_development = 1
 
 #Stock development today
-kryptos_daily_portfolio_development = 100 * (sumofallkryptos - total_kryptos_24h_value) / total_kryptos_24h_value
+if total_kryptos_24h_value != 0:
+    kryptos_daily_portfolio_development = 100 * (sumofallkryptos - total_kryptos_24h_value) / total_kryptos_24h_value
+else:
+    kryptos_daily_portfolio_development = 1
 
 #Commodity's Percentage of all investments
 cashpercentage = investmentpercentage(cashfloat, sumofinvestments)
@@ -726,6 +761,7 @@ kryptospercentage = investmentpercentage(sumofallkryptos, sumofinvestments)
 cashinapartment1percentage = investmentpercentage(cash_in_apartment1, sumofinvestments)
 cashinapartment2percentage = investmentpercentage(cash_in_apartment2_float, sumofinvestments)
 cashinapartment3percentage = investmentpercentage(cash_in_apartment3_float, sumofinvestments)
+cashinapartment4percentage = investmentpercentage(cash_in_apartment4_float, sumofinvestments)
 realestatepercentage = investmentpercentage(sumofallrealestate, sumofinvestments)
 otherinvestmentspercentage = investmentpercentage(other_investmentsfloat, sumofinvestments)
 loangivenspercentage = investmentpercentage(loan_given_float, sumofinvestments)
@@ -741,15 +777,22 @@ for x in range(0, number_of_kryptos_int):
     krypto_percentage_list = krypto_percentage_list + [investmentpercentage(kryptovalue_list[x], sumofinvestments)]
 
 #Total % change, all stocks
-stocks_total_change = 100 * allstocksdifference / total_stocks_paid_value
+if total_stocks_paid_value != 0:
+    stocks_total_change = 100 * allstocksdifference / total_stocks_paid_value
+else:
+    stocks_total_change = 1
 
 #Total % change, all kryptos
-kryptos_total_change = 100 * allkryptosdifference / total_kryptos_paid_value
+if total_kryptos_paid_value != 0:
+    kryptos_total_change = 100 * allkryptosdifference / total_kryptos_paid_value
+else:
+    kryptos_total_change = 1
 
 #Total % change Real Estates
 real_esteate_1_total_change = 100 * real_estate_1_difference / real_estate_1_paid_amount_float
 real_esteate_2_total_change = 100 * real_estate_2_difference / real_estate_2_paid_amount_float
 real_esteate_3_total_change = 100 * real_estate_3_difference / real_estate_3_paid_amount_float
+real_esteate_4_total_change = 100 * real_estate_4_difference / real_estate_4_paid_amount_float
 ########################
 #Algorithms
 ########################
@@ -841,6 +884,24 @@ def highlight_max(data, color='yellow'):
                             index=data.index, columns=data.columns)
 
 
+#Get deseired Currency exchanges
+'''
+eursekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=SEK')
+cadsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=CAD&To=SEK')
+usdsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=USD&To=SEK')
+phpsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=PHP&To=SEK')
+cadeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=CAD&To=EUR')
+usdeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=USD&To=EUR')
+
+sekeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=EUR')
+sekcadratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=CAD')
+sekusdratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=USD')
+sekphpratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=PHP')
+eurcadratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=EUR&To=CAD')
+eurusdratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=USD')
+#xauusdratefloat = returnexchangerate('https://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=XAU&To=USD')
+xauusdratefloat=1
+'''
 #json
 #Define data
 def create_calculated_data_json():
@@ -857,18 +918,24 @@ def create_calculated_data_json():
   "gold": gold,
   }
   ]
-}
-'''
+    }
+  '''
 
 calculated_data = {
-  "Currency Exchange Rates":[
-    {
-      'Euro/Swedish exchange rate': eursekratefloat,
-      'Canadian/Swedish exchange rate': cadsekratefloat,
-      'USD/SEK exchange rate': usdsekratefloat,
-      'Philippine Peso/SEK exchange rate': phpsekratefloat,
-      'USD/Euro exchange rate': usdeurratefloat,
-      'Canadian/Euro exchange rate': cadeurratefloat
+   "Currency Exchange Rates":[
+      {
+      'eursekratefloat': eursekratefloat,
+      'sekeurratefloat': sekeurratefloat,
+      'cadsekratefloat': cadsekratefloat,
+      'sekcadratefloat': sekcadratefloat,
+      'usdsekratefloat': usdsekratefloat,
+      'sekusdratefloat': sekusdratefloat,
+      'phpsekratefloat': phpsekratefloat,
+      'sekphpratefloat': sekphpratefloat,
+      'usdeurratefloat': usdeurratefloat,
+      'eurusdratefloat': eurusdratefloat,
+      'cadeurratefloat': cadeurratefloat,
+      'eurcadratefloat': eurcadratefloat
     }
     ],
     "Golds": [
@@ -898,45 +965,33 @@ calculated_data = {
     ,
   }
 
-eursekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=SEK')
-cadsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=CAD&To=SEK')
-usdsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=USD&To=SEK')
-phpsekratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=PHP&To=SEK')
-cadeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=CAD&To=EUR')
-usdeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=USD&To=EUR')
 
-sekeurratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=EUR')
-sekcadratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=CAD')
-sekusdratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=USD')
-sekphpratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=SEK&To=PHP')
-eurcadratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1?From=EUR&To=CAD')
-eurusdratefloat = returnexchangerate('http://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=EUR&To=USD')
-xauusdratefloat = returnexchangerate('https://www.xe.com/sv/currencyconverter/convert/?Amount=1&From=XAU&To=USD')
-
-
-# Write Calculated data
+#Write Calculated data
 calculated_data_path = "stockportfolio\src\data\calculated_data.json"
 calculated_data_abs_file_path = os.path.join(script_dir, calculated_data_path)
 with io.open(calculated_data_abs_file_path, 'w', encoding='utf8') as outfile:
-        str_ = json.dumps(calculated_data,
-                          indent=4, sort_keys=True,
-                          separators=(',', ': '), ensure_ascii=False)
-        outfile.write(to_unicode(str_))
+    str_ = json.dumps(calculated_data,
+                         indent=4, sort_keys=True,
+                         separators=(',', ': '), ensure_ascii=False)
+    outfile.write(to_unicode(str_))
 
 
-stock_data = {
-   'Stock Data': {'foo': stocks_total_change,
+    stock_data = {
+    'Stock Data': {'foo': stocks_total_change,
                   'key': 'value',
                   'the answer': 42}}
-#with open('data\data.json', 'w') as outfile:
-#    json.dump(data, outfile)
-# Write JSON file
-with io.open(r'C:\Users\JannePC-Skylake\PycharmProjects\StockPortfolio\stockportfolio\src\data\stocks.json', 'w', encoding='utf8') as outfile:
+    #with open('data\data.json', 'w') as outfile:
+    #    json.dump(data, outfile)
+
+
+    # Write JSON file
+    with io.open(r'C:\Users\JannePC-Skylake\PycharmProjects\StockPortfolio\stockportfolio\src\data\stocks.json', 'w', encoding='utf8') as outfile:
         str_ = json.dumps(stock_data,
                           indent=4, sort_keys=True,
                           separators=(',', ': '), ensure_ascii=False)
         outfile.write(to_unicode(str_))
 
+#Compilation output
 print('--------------------------------------------------------------------------------')
 print('************ Welcome to Stock Portfolio,', name, '************')
 print('--------------------------------------------------------------------------------')
@@ -1075,7 +1130,7 @@ class Stocktable(Frame):
     def CreateUIStock(self):
         tv = Treeview(self)
         tv['columns'] = ('currprice', 'amount', 'prevclose', 'daychangepers', 'buyunder', 'lowprice', 'highprice', 'recommendedbuy', 'gav', 'persofinvestment',
-                         'maxpersofinvestment', 'paidvalue', 'totalvalue', 'difference', 'totalchange', 'selltarget')
+                         'maxpersofinvestment', 'paidvalue', 'totalvalue', 'difference', 'stocktotalchange', 'selltarget')
         tv.heading("#0", text='Stock', anchor='w')
         tv.column("#0", anchor="w")
         tv.heading('currprice', text='Current Price')
@@ -1106,8 +1161,8 @@ class Stocktable(Frame):
         tv.column('totalvalue', anchor='center', width=80)
         tv.heading('difference', text='Difference')
         tv.column('difference', anchor='center', width=80)
-        tv.heading('totalchange', text='Total Change %')
-        tv.column('totalchange', anchor='center', width=80)
+        tv.heading('stocktotalchange', text='Stock Total Change %')
+        tv.column('stocktotalchange', anchor='center', width=80)
         tv.heading('selltarget', text='Sell Target')
         tv.column('selltarget', anchor='center', width=50)
         tv.grid(sticky = (N,S,W,E))
@@ -1318,8 +1373,12 @@ class Stocktable(Frame):
                         '%.f' % cash_in_apartment2_float + ' ' + currency, '', '%.2f' % real_estate_2_difference + ' ' + currency, '%.2f' % real_esteate_2_total_change + ' %'))
         self.treeview.insert('', 'end', text='Real Estate 3', values=(
         '', '', '', '', '', '', '', '', '%.2f' % cashinapartment3percentage + ' %', '%.f' %  real_estate_3_total_max_pers_of_investments + ' %',
-                                '%.f' % real_estate_3_paid_amount + ' ' + currency,
+                                '%.f' % real_estate_3_paid_amount_float + ' ' + currency,
                         '%.f' % cash_in_apartment3_float + ' ' + currency, '', '%.f' % real_estate_3_difference + ' ' + currency, '%.2f' % real_esteate_3_total_change + ' %'))
+        self.treeview.insert('', 'end', text='Real Estate 4', values=(
+        '', '', '', '', '', '', '', '', '%.2f' % cashinapartment4percentage + ' %', '%.f' %  real_estate_4_total_max_pers_of_investments + ' %',
+                                '%.f' % real_estate_4_paid_amount_float + ' ' + currency,
+                        '%.f' % cash_in_apartment4_float + ' ' + currency, '', '%.f' % real_estate_4_difference + ' ' + currency, '%.2f' % real_esteate_4_total_change + ' %'))
         self.treeview.insert('', 'end', text='Other investments', values=(
         '', '', '', '', '', '', '', '', '%.2f' % otherinvestmentspercentage + ' %', '%.f' % other_investments_total_max_pers_of_investments + ' %',
                                                          '%.f' % other_investmentsfloat + ' ' + currency,

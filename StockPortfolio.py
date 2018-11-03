@@ -35,6 +35,7 @@ with open(personal_data_abs_file_path, "r") as read_file:
 #personal_data
 name = personal_data['name']
 debt = personal_data['debt']
+debt_townhouse = personal_data['debt_townhouse']
 debt_interest_rate = personal_data['debt_interest_rate']
 cash_account1 = personal_data['cash_account1']
 cash_account2 = personal_data['cash_account2']
@@ -48,6 +49,7 @@ currency =personal_data['currency']
 stock_total_max_pers_of_investments=personal_data['stock_max_pers_of_investments']
 number_of_stocks=personal_data['number_of_stocks']
 debtfloat = float(debt)
+debt_townhouse_float = float(debt_townhouse)
 debt_interest_ratefloat = float(debt_interest_rate)
 goldonzfloat = float(goldonz)
 cash_account1_float = float(cash_account1)
@@ -725,7 +727,7 @@ sumofallrealestate = float(current_est_value_apartment) + cash_in_apartment2_flo
 #Total sum of all investments
 sumofinvestments = cashfloat + sumofallstocks + sumofallkryptos + sumofallrealestate + gold + other_investmentsfloat + loan_given_float
 
-net_worth = sumofinvestments - debtfloat
+net_worth = sumofinvestments - debtfloat - debt_townhouse
 missing_from_goal = sek_goal - net_worth
 
 #Stock previous close value
@@ -1363,22 +1365,22 @@ class Stocktable(Frame):
         self.treeview.insert('', 'end', text='Cash', values=(
         '', '', '', '', '', '', '', '', '%.2f' % cashpercentage + ' %', '%.f' % cash_total_max_pers_of_investments +' %',
         '', '%.f' % cashfloat + ' ' + currency, '', ''))
-        self.treeview.insert('', 'end', text='Real Estate 1', values=(
+        self.treeview.insert('', 'end', text='Slussplan', values=(
         '', '', '', '', '', '', '', '', '%.2f' % cashinapartment1percentage + ' %', '%.f' % real_estate_1_total_max_pers_of_investments + ' %',
         '%.f' % real_estate_1_paid_amount + ' ' + currency, '%.f' % float(current_est_value_apartment) + ' ' + currency,
                                                          '%.f' % debtfloat + ' ' + currency, '%.f' % real_estate_1_difference + ' ' + currency, '%.2f' % real_esteate_1_total_change + ' %'))
-        self.treeview.insert('', 'end', text='Real Estate 2', values=(
+        self.treeview.insert('', 'end', text='Nils', values=(
         '', '', '', '', '', '', '', '', '%.2f' % cashinapartment2percentage + ' %', '%.f' % real_estate_2_total_max_pers_of_investments + ' %',
         '%.f' % real_estate_2_paid_amount + ' ' + currency,
                         '%.f' % cash_in_apartment2_float + ' ' + currency, '', '%.2f' % real_estate_2_difference + ' ' + currency, '%.2f' % real_esteate_2_total_change + ' %'))
-        self.treeview.insert('', 'end', text='Real Estate 3', values=(
+        self.treeview.insert('', 'end', text='Montana Heights', values=(
         '', '', '', '', '', '', '', '', '%.2f' % cashinapartment3percentage + ' %', '%.f' %  real_estate_3_total_max_pers_of_investments + ' %',
                                 '%.f' % real_estate_3_paid_amount_float + ' ' + currency,
                         '%.f' % cash_in_apartment3_float + ' ' + currency, '', '%.f' % real_estate_3_difference + ' ' + currency, '%.2f' % real_esteate_3_total_change + ' %'))
-        self.treeview.insert('', 'end', text='Real Estate 4', values=(
+        self.treeview.insert('', 'end', text='Townhouse', values=(
         '', '', '', '', '', '', '', '', '%.2f' % cashinapartment4percentage + ' %', '%.f' %  real_estate_4_total_max_pers_of_investments + ' %',
                                 '%.f' % real_estate_4_paid_amount_float + ' ' + currency,
-                        '%.f' % cash_in_apartment4_float + ' ' + currency, '', '%.f' % real_estate_4_difference + ' ' + currency, '%.2f' % real_esteate_4_total_change + ' %'))
+                        '%.f' % cash_in_apartment4_float + ' ' + currency, '%.f' % debt_townhouse_float + ' ' + currency, '%.f' % real_estate_4_difference + ' ' + currency, '%.2f' % real_esteate_4_total_change + ' %'))
         self.treeview.insert('', 'end', text='Other investments', values=(
         '', '', '', '', '', '', '', '', '%.2f' % otherinvestmentspercentage + ' %', '%.f' % other_investments_total_max_pers_of_investments + ' %',
                                                          '%.f' % other_investmentsfloat + ' ' + currency,

@@ -40,8 +40,8 @@ debt_interest_rate = personal_data['debt_interest_rate']
 cash_account1 = personal_data['cash_account1']
 cash_account2 = personal_data['cash_account2']
 loan_given = personal_data['loan_given']
-cash_in_apartment3 = personal_data['cash_in_apartment3']
-cash_in_apartment4 = personal_data['cash_in_apartment4']
+apartment3_estimated_value = personal_data['apartment3_estimated_value']
+apartment4_estimated_value = personal_data['apartment4_estimated_value']
 other_investments = personal_data['other_investments']
 goldonz = personal_data['goldonz']
 minimumbuy = personal_data['minimumbuy']
@@ -252,9 +252,9 @@ xauusdratefloat=1
 #xauusdratefloat=1
 #usdsekratefloat=1
 
-cash_in_apartment3_float1 = float(cash_in_apartment3)
+cash_in_apartment3_float1 = float(apartment3_estimated_value)
 cash_in_apartment3_float = cash_in_apartment3_float1 * phpsekratefloat
-cash_in_apartment4_float1 = float(cash_in_apartment4)
+cash_in_apartment4_float1 = float(apartment4_estimated_value)
 cash_in_apartment4_float = cash_in_apartment4_float1 * phpsekratefloat
 
 def returngoldusdchangepers():
